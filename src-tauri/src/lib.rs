@@ -2130,3 +2130,5 @@ pub fn run() {
 // feat: implement DPI bypass with WinDivert integration [132602]
 
 // feat: add ISP detection for Turkish ISPs [132602]
+
+// feat: implement firewall rule management [132602]
