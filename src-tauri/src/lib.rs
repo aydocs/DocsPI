@@ -2132,3 +2132,5 @@ pub fn run() {
 // feat: add ISP detection for Turkish ISPs [132602]
 
 // feat: implement firewall rule management [132602]
+
+// feat: add system proxy backup and restore [132602]
