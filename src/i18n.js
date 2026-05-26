@@ -4950,3 +4950,5 @@ export default translations;
 // Commit: feat: add Kurdish language support [132224]
 
 // Commit: feat: add Turkish Cypriot language support [132224]
+
+// feat: implement i18n system with 13 languages [132603]
