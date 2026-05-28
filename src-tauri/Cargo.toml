@@ -1,8 +1,8 @@
 [package]
 name = "DocsPI"
-version = "5.0.0"
-description = "Dpi Bypass Tool."
-authors = ["Shencim"]
+version = "1.0.0"
+description = "DocsPI — DarknesDPI'nin gelismis surumu. DPI bypass araci."
+authors = ["Shencim", "aydocs"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
