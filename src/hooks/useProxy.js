@@ -18,7 +18,7 @@ export function useProxy({ configRef, addLog, t }) {
     }
     try {
       await invoke("stop_divert_engine");
-    } catch (_) {}
+    } catch (e) { console.warn("stop_divert_engine failed:", e); }
   }, [addLog, t]);
 
   const buildDivertConfig = useCallback((mode, proxyPort = 0) => ({

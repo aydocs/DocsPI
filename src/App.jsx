@@ -507,7 +507,7 @@ function AppContent() {
       childProcess.current = null;
     }
     (async () => {
-      try { await invoke("stop_pac_server"); } catch (_) {}
+      try { await invoke("stop_pac_server"); } catch (e) { console.warn("stop_pac_server failed:", e); }
     })();
     setIsConnected(false);
 
@@ -686,7 +686,7 @@ function AppContent() {
                 addLog(`DNS: ${fastest.provider} (${fastest.latency_ms}ms) en hizli`, 'success');
               }
             }
-          } catch (_) {}
+          } catch (e) { console.warn("DNS latency check failed:", e); }
         }
 
         // Güncelleme kontrolü (GitHub API)
@@ -699,7 +699,7 @@ function AppContent() {
               setUpdateInfo({ version: latestVer, url: data.html_url });
             }
           }
-        } catch (_) {}
+        } catch (e) { console.warn("update check failed:", e); }
       } catch (e) {
         console.error("Initial cleanup failed:", e);
       }
@@ -814,7 +814,7 @@ function AppContent() {
         userIntentDisconnect.current = true; // prevent false notifications on reload/close
         try {
           await invoke("stop_pac_server");
-        } catch (_) {}
+        } catch (e) { console.warn("stop_pac_server on unload failed:", e); }
         if (childProcess.current) {
           try {
             await childProcess.current.kill();
@@ -868,7 +868,7 @@ function AppContent() {
         }
         try {
           await invoke("stop_pac_server");
-        } catch (_) {}
+        } catch (e) { console.warn("stop_pac_server on exit failed:", e); }
         await clearProxy(true);
         
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -899,7 +899,7 @@ function AppContent() {
         try {
           await invoke('stop_pac_server');
           await childProcess.current.kill();
-        } catch (_) {}
+        } catch (e) { console.warn("cleanup kill failed:", e); }
         childProcess.current = null;
       }
       

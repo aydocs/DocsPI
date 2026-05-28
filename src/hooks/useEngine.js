@@ -239,7 +239,7 @@ export function useEngine({
     if (childProcess.current) {
         try {
           await childProcess.current.kill();
-        } catch (_) {}
+        } catch (e) { console.warn("child kill failed:", e); }
         childProcess.current = null;
     }
     await clearProxy(true);
@@ -277,7 +277,7 @@ export function useEngine({
               addLog(t.logDnsFallback?.(fallbackId.toUpperCase(), latency) || `Yedek DNS: ${fallbackId.toUpperCase()} (${latency}ms)`, 'success');
               break;
             }
-          } catch (_) {}
+          } catch (e) { console.warn("fallback DNS check failed:", e); }
         }
         
         if (resolvedDns === currentDns) {

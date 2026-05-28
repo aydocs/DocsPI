@@ -45,7 +45,7 @@ export function useConnection({ configRef, addLog, t }) {
         try {
           const ms = await invoke("get_ping", { host: "1.1.1.1", port: 443 });
           setPingMs(ms >= 999 ? null : ms);
-        } catch (_) {}
+        } catch (e) { console.warn("get_ping failed:", e); }
       };
       measure();
       pingIntervalRef.current = setInterval(measure, 5000);
