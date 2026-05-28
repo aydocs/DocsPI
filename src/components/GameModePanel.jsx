@@ -124,13 +124,13 @@ export default function GameModePanel({ config, updateConfig, isConnected }) {
             gap: '8px',
             fontSize: '0.72rem',
           }}>
-            <Activity size={14} style={{ color: '#60a5fa', flexShrink: 0 }} />
+            <Activity size={14} style={{ color: '#a78bfa', flexShrink: 0 }} />
             <span style={{ flex: 1, color: '#a1a1aa' }}>
               UDP bypass via WinDivert
             </span>
             <span style={{
-              fontSize: '0.6rem', fontWeight: '700', color: '#60a5fa',
-              background: 'rgba(59,130,246,0.1)', padding: '2px 6px',
+              fontSize: '0.6rem', fontWeight: '700', color: '#a78bfa',
+              background: 'rgba(124, 58, 237,0.1)', padding: '2px 6px',
               borderRadius: '4px',
             }}>
               READY

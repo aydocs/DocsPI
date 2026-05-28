@@ -6,7 +6,7 @@ export const THEME_DARK = {
   '--text-primary': '#ffffff',
   '--text-secondary': '#a1a1aa',
   '--text-tertiary': '#71717a',
-  '--accent-blue': '#3b82f6',
+  '--accent-blue': '#7c3aed',
   '--accent-green': '#10b981',
   '--accent-yellow': '#f59e0b',
   '--accent-red': '#ef4444',

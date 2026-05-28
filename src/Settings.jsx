@@ -316,7 +316,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       className={`v2-item hover-effect ${lang === l.code ? 'v2-selected' : ''}`}
                       style={{ 
                         ...s.item,
-                        background: lang === l.code ? 'rgba(59, 130, 246, 0.15)' : '#0f172a',
+                        background: lang === l.code ? 'rgba(124, 58, 237, 0.15)' : '#0f172a',
                         opacity: lang === l.code ? 1 : 0.7,
                         cursor: 'pointer',
                         padding: '10px 12px',
@@ -326,7 +326,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                     >
                       <div className="v2-icon blue" style={{ 
                         ...s.icon,
-                        background: lang === l.code ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255, 255, 255, 0.05)', 
+                        background: lang === l.code ? 'rgba(124, 58, 237, 0.25)' : 'rgba(255, 255, 255, 0.05)', 
                         width: '32px', height: '32px', minWidth: '32px', borderRadius: '8px' 
                       }}>
                         <span style={{ fontSize: '1.1rem' }}>{l.flag}</span>
@@ -334,12 +334,12 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       <div style={s.itemText}>
                         <h3 style={{ 
                           ...s.itemTitle,
-                          color: lang === l.code ? '#60a5fa' : '#e2e8f0', 
+                          color: lang === l.code ? '#a78bfa' : '#e2e8f0', 
                           fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' 
                         }}>{l.name}</h3>
                       </div>
                       {lang === l.code && (
-                        <Check size={14} color="#60a5fa" style={{ flexShrink: 0 }} />
+                        <Check size={14} color="#a78bfa" style={{ flexShrink: 0 }} />
                       )}
                     </div>
                   ))}
@@ -356,17 +356,17 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       <div style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
                         padding: '10px 12px',
-                        background: 'rgba(59,130,246,0.06)',
+                        background: 'rgba(124, 58, 237,0.06)',
                         borderRadius: '10px',
-                        border: '1px solid rgba(59,130,246,0.15)',
+                        border: '1px solid rgba(124, 58, 237,0.15)',
                       }}>
                         <div style={{
                           width: '36px', height: '36px', borderRadius: '10px',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: 'rgba(59,130,246,0.15)',
+                          background: 'rgba(124, 58, 237,0.15)',
                           flexShrink: 0,
                         }}>
-                          <Globe size={18} color="#60a5fa" />
+                          <Globe size={18} color="#a78bfa" />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: '0.75rem', fontWeight: '600', color: '#e2e8f0' }}>
@@ -537,9 +537,9 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                         style={{
                           padding: '6px 14px', borderRadius: '8px',
                           fontSize: '0.68rem', fontWeight: '600', cursor: 'pointer',
-                          background: isActivated ? 'rgba(239,68,68,0.12)' : 'rgba(59,130,246,0.12)',
-                          color: isActivated ? '#f87171' : '#60a5fa',
-                          border: isActivated ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(59,130,246,0.2)',
+                          background: isActivated ? 'rgba(239,68,68,0.12)' : 'rgba(124, 58, 237,0.12)',
+                          color: isActivated ? '#f87171' : '#a78bfa',
+                          border: isActivated ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(124, 58, 237,0.2)',
                         }}
                       >
                         {isActivated ? 'Deactivate' : 'Activate Free'}
@@ -750,7 +750,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       style={{
                         ...s.button,
                         background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.3)',
-                        color: '#60a5fa', padding: '8px 16px', whiteSpace: 'nowrap', flexShrink: 0,
+                        color: '#a78bfa', padding: '8px 16px', whiteSpace: 'nowrap', flexShrink: 0,
                       }}
                     >
                       {t.profileSaveShort}
@@ -1062,7 +1062,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       className={`v2-item hover-effect ${config.dpiMethod === '2' ? 'v2-selected' : ''}`}
                       style={{ 
                         ...s.item,
-                        background: config.dpiMethod === '2' ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+                        background: config.dpiMethod === '2' ? 'rgba(124, 58, 237, 0.1)' : 'transparent',
                         opacity: !isAdmin ? 0.4 : (config.dpiMethod === '2' ? 1 : 0.5),
                         cursor: !isAdmin ? 'not-allowed' : 'pointer',
                       }}
@@ -1071,11 +1071,11 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                         updateConfig({ dpiMethod: '2', httpsChunkSize: 1, selectedIspProfile: 'custom' }); 
                       }}
                     >
-                      <div className="v2-icon blue" style={{ ...s.icon, background: config.dpiMethod === '2' ? 'rgba(59, 130, 246, 0.2)' : '' }}>
+                      <div className="v2-icon blue" style={{ ...s.icon, background: config.dpiMethod === '2' ? 'rgba(124, 58, 237, 0.2)' : '' }}>
                         {!isAdmin ? <Lock size={18} /> : <Shield size={20} className={config.dpiMethod === '2' ? 'active-icon' : ''} />}
                       </div>
                       <div style={s.itemText}>
-                        <h3 style={{ ...s.itemTitle, color: config.dpiMethod === '2' ? '#60a5fa' : '' }}>{t.modeStrongName}</h3>
+                        <h3 style={{ ...s.itemTitle, color: config.dpiMethod === '2' ? '#a78bfa' : '' }}>{t.modeStrongName}</h3>
                         <p style={s.itemDesc}>{!isAdmin ? 'Yönetici izni gerektirir' : t.modeStrongDesc}</p>
                       </div>
                       <div className={`v2-radio ${config.dpiMethod === '2' ? 'on' : ''}`}>
@@ -1113,7 +1113,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                               <div className="v2-divider" style={{ opacity: 0.1, margin: '8px 0' }} />
 
                               <div className="v2-item" style={{ padding: 0 }}>
-                                <div className="v2-icon" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', width: '32px', height: '32px', minWidth: '32px' }}>
+                                <div className="v2-icon" style={{ background: 'rgba(124, 58, 237, 0.15)', color: '#7c3aed', width: '32px', height: '32px', minWidth: '32px' }}>
                                   <Monitor size={16} />
                                 </div>
                                 <div className="v2-item-text">
@@ -1125,7 +1125,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                                     style={{ 
                                       width: '100%', padding: '4px 8px', borderRadius: '6px', 
                                       background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
-                                      color: '#93c5fd', fontSize: '0.75rem', marginTop: '4px', outline: 'none'
+                                      color: '#c4b5fd', fontSize: '0.75rem', marginTop: '4px', outline: 'none'
                                     }}
                                   />
                                 </div>
@@ -1233,8 +1233,8 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                           {CHUNK_SIZES.map((opt) => {
                             const fallbackChunk = DEFAULT_CHUNKS[config.dpiMethod] || 2;
                             const isSelected = Number(config.httpsChunkSize || fallbackChunk) === opt.value;
-                            const accentColor = config.dpiMethod === '2' ? '#60a5fa' : '#4ade80';
-                            const accentBg = config.dpiMethod === '2' ? 'rgba(59, 130, 246, 0.18)' : 'rgba(34, 197, 94, 0.18)';
+                            const accentColor = config.dpiMethod === '2' ? '#a78bfa' : '#4ade80';
+                            const accentBg = config.dpiMethod === '2' ? 'rgba(124, 58, 237, 0.18)' : 'rgba(34, 197, 94, 0.18)';
                             return (
                               <button
                                 key={opt.value}
@@ -1424,7 +1424,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       style={{
                         ...s.button,
                         background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.3)',
-                        color: '#60a5fa', padding: '8px 14px',
+                        color: '#a78bfa', padding: '8px 14px',
                       }}
                     >
                       {t.domainAdd}
@@ -1501,9 +1501,9 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                         style={{
                           ...s.button,
                           width: '100%',
-                          background: isChecking ? 'rgba(59, 130, 246, 0.05)' : 'rgba(59, 130, 246, 0.1)',
-                          color: isChecking ? '#93c5fd' : '#60a5fa',
-                          border: '1px solid rgba(59, 130, 246, 0.2)',
+                          background: isChecking ? 'rgba(124, 58, 237, 0.05)' : 'rgba(124, 58, 237, 0.1)',
+                          color: isChecking ? '#c4b5fd' : '#a78bfa',
+                          border: '1px solid rgba(124, 58, 237, 0.2)',
                         }}
                       >
                         {isChecking ? <RotateCw size={16} className="spin" /> : <Activity size={16} />}
@@ -1621,7 +1621,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                 <div style={s.card}>
                   
                   <div style={s.item}>
-                    <div className="v2-icon blue" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa' }}><Bell size={20} /></div>
+                    <div className="v2-icon blue" style={{ background: 'rgba(124, 58, 237, 0.2)', color: '#a78bfa' }}><Bell size={20} /></div>
                     <div style={s.itemText}>
                       <h3 style={s.itemTitle}>{t.notifications}</h3>
                       <p style={s.itemDesc}>{t.notificationsDesc}</p>
@@ -1748,7 +1748,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
                       
                       <div style={{ marginTop: '12px', padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
                         <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-tertiary)', fontWeight: 600 }}>Teşekkürler & Krediler:</span>
-                        <span className="v2-dev-name" style={{ fontSize: '0.85rem', color: '#60a5fa' }}>shencim</span>
+                        <span className="v2-dev-name" style={{ fontSize: '0.85rem', color: '#a78bfa' }}>shencim</span>
                         <span className="v2-dev-role" style={{ display: 'block', fontSize: '0.65rem' }}>Projenin ilk kodlarını yazan kişi</span>
                       </div>
                     </div>
@@ -1789,7 +1789,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies,
       {/* Tabs / Bottom Nav */}
       <nav className="bottom-nav" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(10, 10, 18, 0.95)' }}>
         <button className="nav-btn" onClick={() => setActiveTab('general')} style={{ color: activeTab === 'general' ? '#fff' : '' }}>
-          <SettingsIcon size={22} strokeWidth={activeTab === 'general' ? 2.5 : 2} style={{ color: activeTab === 'general' ? '#60a5fa' : '' }} />
+          <SettingsIcon size={22} strokeWidth={activeTab === 'general' ? 2.5 : 2} style={{ color: activeTab === 'general' ? '#a78bfa' : '' }} />
           <span>{t.tabGeneral || 'GENEL'}</span>
         </button>
         <div className="nav-divider" />

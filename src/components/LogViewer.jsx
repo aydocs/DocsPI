@@ -7,7 +7,7 @@ const FILTERS = [
   { key: 'error', label: 'Hata', color: '#f87171', icon: XCircle },
   { key: 'warn', label: 'Uyarı', color: '#facc15', icon: AlertCircle },
   { key: 'success', label: 'Başarı', color: '#4ade80', icon: CheckCircle },
-  { key: 'info', label: 'Bilgi', color: '#60a5fa', icon: Info },
+  { key: 'info', label: 'Bilgi', color: '#a78bfa', icon: Info },
 ];
 
 const LOG_ICONS = {
@@ -21,7 +21,7 @@ const LOG_COLORS = {
   error: '#f87171',
   warn: '#facc15',
   success: '#4ade80',
-  info: '#60a5fa',
+  info: '#a78bfa',
 };
 
 export function LogViewer({ logs, onClose, onClear, onCopy, copyStatus, t }) {
@@ -52,7 +52,7 @@ export function LogViewer({ logs, onClose, onClear, onCopy, copyStatus, t }) {
     { key: 'error', label: translations.logFilterError, color: '#f87171', icon: XCircle },
     { key: 'warn', label: translations.logFilterWarn, color: '#facc15', icon: AlertCircle },
     { key: 'success', label: translations.logFilterSuccess, color: '#4ade80', icon: CheckCircle },
-    { key: 'info', label: translations.logFilterInfo, color: '#60a5fa', icon: Info },
+    { key: 'info', label: translations.logFilterInfo, color: '#a78bfa', icon: Info },
   ];
 
   return (

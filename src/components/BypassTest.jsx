@@ -22,7 +22,7 @@ const BypassTest = ({ proxyPort, language = 'tr' }) => {
     switch (status) {
       case 'success': return 'text-green-500';
       case 'failed': return 'text-red-500';
-      case 'testing': return 'text-blue-500';
+      case 'testing': return 'text-purple-500';
       default: return 'text-zinc-400';
     }
   };
@@ -45,7 +45,7 @@ const BypassTest = ({ proxyPort, language = 'tr' }) => {
           ${status === 'testing' ? 'bg-zinc-800 cursor-not-allowed' : 'bg-zinc-800 hover:bg-zinc-700 active:scale-95'}`}
       >
         {status === 'testing' && (
-          <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-3 h-3 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
         )}
         <span className={getStatusColor()}>{getStatusText()}</span>
       </button>

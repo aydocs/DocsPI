@@ -113,11 +113,11 @@ export default function SpeedTestMeter({ dnsLatencies }) {
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            background: testing ? 'rgba(255,255,255,0.05)' : 'rgba(59,130,246,0.15)',
-            border: testing ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(59,130,246,0.3)',
+            background: testing ? 'rgba(255,255,255,0.05)' : 'rgba(124, 58, 237,0.15)',
+            border: testing ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(124, 58, 237,0.3)',
             borderRadius: '10px',
             padding: '7px 14px',
-            color: testing ? '#71717a' : '#60a5fa',
+            color: testing ? '#71717a' : '#a78bfa',
             fontSize: '0.72rem',
             fontWeight: '600',
             cursor: testing ? 'not-allowed' : 'pointer',
@@ -132,7 +132,7 @@ export default function SpeedTestMeter({ dnsLatencies }) {
               style={{
                 width: 14, height: 14,
                 border: '2px solid rgba(255,255,255,0.2)',
-                borderTopColor: '#60a5fa',
+                borderTopColor: '#a78bfa',
                 borderRadius: '50%',
               }}
             />
@@ -161,9 +161,9 @@ export default function SpeedTestMeter({ dnsLatencies }) {
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem' }}>
-                <Globe size={12} style={{ color: '#60a5fa' }} />
+                <Globe size={12} style={{ color: '#a78bfa' }} />
                 <span style={{ color: '#a1a1aa' }}>Speed:</span>
-                <span style={{ color: '#60a5fa', fontWeight: '600' }}>
+                <span style={{ color: '#a78bfa', fontWeight: '600' }}>
                   {testResult.download_speed_mbps > 0
                     ? `${testResult.download_speed_mbps} Mbps`
                     : 'N/A'}

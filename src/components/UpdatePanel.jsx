@@ -45,8 +45,8 @@ export default function UpdatePanel({ style }) {
   const statusColors = {
     idle: '#64748b',
     checking: '#facc15',
-    available: '#60a5fa',
-    downloading: '#60a5fa',
+    available: '#a78bfa',
+    downloading: '#a78bfa',
     downloaded: '#4ade80',
     installing: '#a855f7',
     error: '#f87171',
@@ -108,7 +108,7 @@ export default function UpdatePanel({ style }) {
               style={{
                 width: 16, height: 16,
                 border: '2px solid rgba(255,255,255,0.15)',
-                borderTopColor: '#60a5fa', borderRadius: '50%',
+                borderTopColor: '#a78bfa', borderRadius: '50%',
               }}
             />
           ) : status === 'downloaded' || status === 'installing' ? (
@@ -116,7 +116,7 @@ export default function UpdatePanel({ style }) {
           ) : status === 'error' ? (
             <AlertTriangle size={20} color="#f87171" />
           ) : (
-            <Shield size={20} color={status === 'available' ? '#60a5fa' : '#64748b'} />
+            <Shield size={20} color={status === 'available' ? '#a78bfa' : '#64748b'} />
           )}
         </div>
 
@@ -129,7 +129,7 @@ export default function UpdatePanel({ style }) {
             {status === 'available' && (
               <span style={{
                 padding: '1px 6px', borderRadius: '4px',
-                background: 'rgba(96,165,250,0.15)', color: '#60a5fa',
+                background: 'rgba(96,165,250,0.15)', color: '#a78bfa',
                 fontSize: '0.6rem', fontWeight: 600,
               }}>
                 {latestVersion}
@@ -157,7 +157,7 @@ export default function UpdatePanel({ style }) {
               style={{
                 padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
                 background: 'rgba(96,165,250,0.15)', border: '1px solid rgba(96,165,250,0.3)',
-                color: '#60a5fa', fontWeight: 600, fontSize: '0.68rem',
+                color: '#a78bfa', fontWeight: 600, fontSize: '0.68rem',
                 whiteSpace: 'nowrap',
               }}
             >
@@ -211,7 +211,7 @@ export default function UpdatePanel({ style }) {
               initial={{ width: 0 }}
               animate={{ width: `${downloadProgress.percent}%` }}
               transition={{ duration: 0.3 }}
-              style={{ height: '100%', background: '#60a5fa', borderRadius: '2px' }}
+              style={{ height: '100%', background: '#a78bfa', borderRadius: '2px' }}
             />
           </div>
           <div style={{ fontSize: '0.6rem', color: '#52525b', marginTop: '4px', textAlign: 'right' }}>
@@ -280,7 +280,7 @@ export default function UpdatePanel({ style }) {
                 cursor: 'pointer',
                 background: channel === 'stable' ? 'rgba(96,165,250,0.15)' : 'rgba(255,255,255,0.04)',
                 border: channel === 'stable' ? '1px solid rgba(96,165,250,0.3)' : '1px solid rgba(255,255,255,0.08)',
-                color: channel === 'stable' ? '#60a5fa' : '#64748b',
+                color: channel === 'stable' ? '#a78bfa' : '#64748b',
               }}
             >
               Stable
@@ -369,7 +369,7 @@ export default function UpdatePanel({ style }) {
                           ? 'rgba(234,179,8,0.12)' : 'rgba(255,255,255,0.05)',
                     color: entry.status === 'installed'
                       ? '#4ade80' : entry.status === 'downloaded'
-                        ? '#60a5fa' : entry.status === 'found'
+                        ? '#a78bfa' : entry.status === 'found'
                           ? '#facc15' : '#64748b',
                   }}>
                     {entry.status === 'installed' ? 'Kuruldu' : entry.status === 'downloaded' ? 'Indi' : entry.status === 'found' ? 'Bulundu' : entry.status}

@@ -6,7 +6,7 @@ export const THEME_LIGHT = {
   '--text-primary': '#09090b',
   '--text-secondary': '#52525b',
   '--text-tertiary': '#a1a1aa',
-  '--accent-blue': '#2563eb',
+  '--accent-blue': '#7c3aed',
   '--accent-green': '#16a34a',
   '--accent-yellow': '#ca8a04',
   '--accent-red': '#dc2626',

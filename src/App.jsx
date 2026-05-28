@@ -1170,7 +1170,7 @@ function AppContent() {
               >
                 <button
                   style={{
-                    background: "#3b82f6",
+                    background: "#7c3aed",
                     color: "white",
                     padding: "0.8rem 2rem",
                     border: "none",
@@ -1184,19 +1184,19 @@ function AppContent() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "8px",
-                    boxShadow: "0 4px 14px rgba(59, 130, 246, 0.3)",
+                    boxShadow: "0 4px 14px rgba(124, 58, 237, 0.3)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#2563eb";
+                    e.currentTarget.style.background = "#6d28d9";
                     e.currentTarget.style.transform = "translateY(-1px)";
                     e.currentTarget.style.boxShadow =
-                      "0 6px 20px rgba(59, 130, 246, 0.4)";
+                      "0 6px 20px rgba(124, 58, 237, 0.4)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "#3b82f6";
+                    e.currentTarget.style.background = "#7c3aed";
                     e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow =
-                      "0 4px 14px rgba(59, 130, 246, 0.3)";
+                      "0 4px 14px rgba(124, 58, 237, 0.3)";
                   }}
                   onClick={() =>
                     openUrl(URLS.tutorialHowItWorks)
@@ -1262,7 +1262,7 @@ function AppContent() {
               position: "absolute", top: "35%", left: "50%",
               transform: "translate(-50%, -50%)",
               width: "100%", height: "400px",
-              background: "radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(0,0,0,0) 60%)",
+              background: "radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, rgba(0,0,0,0) 60%)",
               pointerEvents: "none", zIndex: 0,
             }} />
 
@@ -1285,7 +1285,7 @@ function AppContent() {
                       onClick={() => setShowWelcomeStep(false)}
                       style={{
                         width: "100%",
-                        background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                        background: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
                         color: "white",
                         padding: "1rem",
                         border: "none",
@@ -1297,12 +1297,12 @@ function AppContent() {
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "10px",
-                        boxShadow: "0 8px 24px rgba(59, 130, 246, 0.3)",
+                        boxShadow: "0 8px 24px rgba(124, 58, 237, 0.3)",
                         marginBottom: "1.5rem",
                         transition: "all 0.2s ease",
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(59, 130, 246, 0.4)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(59, 130, 246, 0.3)"; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(124, 58, 237, 0.4)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(124, 58, 237, 0.3)"; }}
                     >
                       <span>{t.welcomeNext}</span>
                       <ChevronRight size={20} />
@@ -1409,7 +1409,7 @@ function AppContent() {
                       }}
                       style={{
                         width: "100%",
-                        background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                        background: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
                         color: "white",
                         padding: "0.85rem",
                         border: "none",
@@ -1421,12 +1421,12 @@ function AppContent() {
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "8px",
-                        boxShadow: "0 4px 14px rgba(59, 130, 246, 0.3)",
+                        boxShadow: "0 4px 14px rgba(124, 58, 237, 0.3)",
                         marginBottom: "0.75rem",
                         transition: "all 0.2s ease",
                       }}
-                      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(59, 130, 246, 0.4)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(59, 130, 246, 0.3)"; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(124, 58, 237, 0.4)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(124, 58, 237, 0.3)"; }}
                     >
                       <Power size={18} />
                       {t.issOverlayApply}
@@ -1616,7 +1616,7 @@ function AppContent() {
                     <Globe
                       size={13}
                       strokeWidth={2.5}
-                      style={{ color: "#60a5fa" }}
+                      style={{ color: "#a78bfa" }}
                     />
                     <span>
                       DNS:{" "}
@@ -1786,17 +1786,17 @@ function AppContent() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                background: "rgba(59, 130, 246, 0.1)",
-                border: "1px solid rgba(59, 130, 246, 0.3)",
+                background: "rgba(124, 58, 237, 0.1)",
+                border: "1px solid rgba(124, 58, 237, 0.3)",
                 padding: "5px 12px",
                 borderRadius: "20px",
                 fontSize: "0.72rem",
-                color: "#93c5fd",
+                color: "#c4b5fd",
               }}>
                 <span>{t.updateAvailable(updateInfo.version)}</span>
                 <button
                   onClick={() => openUrl(updateInfo.url)}
-                  style={{ background: "rgba(59,130,246,0.3)", border: "none", borderRadius: "10px", color: "#fff", padding: "2px 8px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "600" }}
+                  style={{ background: "rgba(124, 58, 237,0.3)", border: "none", borderRadius: "10px", color: "#fff", padding: "2px 8px", fontSize: "0.7rem", cursor: "pointer", fontWeight: "600" }}
                 >
                   {t.updateDownload}
                 </button>
@@ -2025,7 +2025,7 @@ function AppContent() {
                 width: "100%",
                 height: "400px",
                 background:
-                  "radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(0,0,0,0) 50%)",
+                  "radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, rgba(0,0,0,0) 50%)",
                 pointerEvents: "none",
                 zIndex: 0,
               }}
@@ -2063,14 +2063,14 @@ function AppContent() {
                     width: "48px",
                     height: "48px",
                     borderRadius: "14px",
-                    background: "rgba(59, 130, 246, 0.1)",
-                    border: "1px solid rgba(59, 130, 246, 0.2)",
+                    background: "rgba(124, 58, 237, 0.1)",
+                    border: "1px solid rgba(124, 58, 237, 0.2)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Smartphone size={24} color="#3b82f6" />
+                  <Smartphone size={24} color="#7c3aed" />
                 </div>
                 <div>
                   <h2
@@ -2169,10 +2169,10 @@ function AppContent() {
                       border: "none",
                       background:
                         connectionModalTab === "manual"
-                          ? "rgba(59, 130, 246, 0.2)"
+                          ? "rgba(124, 58, 237, 0.2)"
                           : "transparent",
                       color:
-                        connectionModalTab === "manual" ? "#60a5fa" : "#94a3b8",
+                        connectionModalTab === "manual" ? "#a78bfa" : "#94a3b8",
                       fontWeight: connectionModalTab === "manual" ? 600 : 500,
                       fontSize: "0.8rem",
                       cursor: "pointer",
@@ -2203,8 +2203,8 @@ function AppContent() {
                     </div>
                     {/* Step 1: Install Guide */}
                     <div style={{
-                        background: 'rgba(59, 130, 246, 0.08)',
-                        border: '1px solid rgba(59, 130, 246, 0.2)',
+                        background: 'rgba(124, 58, 237, 0.08)',
+                        border: '1px solid rgba(124, 58, 237, 0.2)',
                         borderRadius: '12px',
                         padding: '12px',
                         display: 'flex',
@@ -2219,13 +2219,13 @@ function AppContent() {
                          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                        >
                          <QRCodeSVG value={`http://${lanIp}:${pacPort}/`} size={64} level="M" />
-                         <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', fontSize: '0.65rem', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginTop: '4px' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'rgba(124, 58, 237, 0.1)', color: '#6d28d9', fontSize: '0.65rem', fontWeight: 700, padding: '2px 6px', borderRadius: '4px', marginTop: '4px' }}>
                            <ZoomIn size={10} strokeWidth={3} />
                            BÜYÜT
                          </div>
                        </div>
                        <div>
-                         <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#60a5fa', marginBottom: '2px' }}>{t.modalPacStep1Title}</div>
+                         <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#a78bfa', marginBottom: '2px' }}>{t.modalPacStep1Title}</div>
                          <div style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.4 }}>{t.modalPacStep1Desc}</div>
                        </div>
                     </div>
@@ -2350,7 +2350,7 @@ function AppContent() {
                   style={{
                     width: "100%",
                     background:
-                      "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                      "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
                     color: "white",
                     border: "none",
                     padding: "0.85rem",
@@ -2363,17 +2363,17 @@ function AppContent() {
                     gap: "8px",
                     cursor: "pointer",
                     transition: "all 0.2s",
-                    boxShadow: "0 4px 14px rgba(59, 130, 246, 0.3)",
+                    boxShadow: "0 4px 14px rgba(124, 58, 237, 0.3)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-1px)";
                     e.currentTarget.style.boxShadow =
-                      "0 6px 20px rgba(59, 130, 246, 0.4)";
+                      "0 6px 20px rgba(124, 58, 237, 0.4)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow =
-                      "0 4px 14px rgba(59, 130, 246, 0.3)";
+                      "0 4px 14px rgba(124, 58, 237, 0.3)";
                   }}
                   onClick={() => openUrl(URLS.tutorialProxy)}
                 >

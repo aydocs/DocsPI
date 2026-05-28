@@ -40,7 +40,7 @@ export default function UpdateNotification({ onOpenSettings }) {
     setDismissed(true);
   };
 
-  const barColor = status === 'downloading' ? '#60a5fa' : status === 'downloaded' ? '#4ade80' : '#a855f7';
+  const barColor = status === 'downloading' ? '#a78bfa' : status === 'downloaded' ? '#4ade80' : '#a855f7';
 
   return (
     <AnimatePresence>
@@ -73,11 +73,11 @@ export default function UpdateNotification({ onOpenSettings }) {
                 style={{
                   width: 14, height: 14,
                   border: '2px solid rgba(255,255,255,0.15)',
-                  borderTopColor: '#60a5fa', borderRadius: '50%',
+                  borderTopColor: '#a78bfa', borderRadius: '50%',
                 }}
               />
             ) : (
-              <Download size={16} color={status === 'downloaded' ? '#4ade80' : '#60a5fa'} />
+              <Download size={16} color={status === 'downloaded' ? '#4ade80' : '#a78bfa'} />
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -120,7 +120,7 @@ export default function UpdateNotification({ onOpenSettings }) {
               initial={{ width: 0 }}
               animate={{ width: `${downloadProgress.percent}%` }}
               transition={{ duration: 0.3 }}
-              style={{ height: '100%', background: '#60a5fa', borderRadius: '2px' }}
+              style={{ height: '100%', background: '#a78bfa', borderRadius: '2px' }}
             />
           </div>
         )}
@@ -173,7 +173,7 @@ export default function UpdateNotification({ onOpenSettings }) {
                 style={{
                   flex: 1, padding: '8px', borderRadius: '10px', cursor: 'pointer',
                   background: 'rgba(96,165,250,0.15)', border: '1px solid rgba(96,165,250,0.3)',
-                  color: '#60a5fa', fontWeight: 600, fontSize: '0.72rem',
+                  color: '#a78bfa', fontWeight: 600, fontSize: '0.72rem',
                 }}
               >
                 <Download size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />

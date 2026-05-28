@@ -121,7 +121,7 @@ export default function TrafficCounter({ isConnected, dnsLatencies, ispName }) {
             <Wifi size={10} /> Tahmini Veri
           </div>
           <div style={{
-            fontSize: '0.8rem', fontWeight: 700, color: '#60a5fa',
+            fontSize: '0.8rem', fontWeight: 700, color: '#a78bfa',
           }}>
             {isConnected ? estimateDataUsage(uptime, qualityScore || 50) : '---'}
           </div>
