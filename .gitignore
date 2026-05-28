@@ -1,3 +1,6 @@
+# Project planning (never commit)
+.omo/
+
 # Dependencies
 node_modules/
 package-lock.json
@@ -11,8 +14,6 @@ binaries/
 target/
 
 # Tauri/Rust
-Cargo.lock
-**/Cargo.lock
 
 # IDEs
 .vscode/
