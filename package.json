@@ -1,7 +1,7 @@
 {
   "name": "docspi",
   "private": true,
-  "version": "5.0.6",
+  "version": "1.0.1-beta.1",
   "author": "aydocs",
   "repository": {
     "type": "git",

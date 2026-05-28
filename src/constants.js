@@ -31,7 +31,11 @@ export const DOH_MAP = {
 
 export const APP = {
   name: "DocsPI",
-  version: "5.0.0",
+  version: "1.0.0-beta",
+  versionDisplay: "v1.0.0-beta",
+  versionStage: "beta",
+  versionCodename: "İlk Adım",
+  buildDate: __BUILD_DATE__,
   designWidth: 380,
   designHeight: 700,
   maxLogs: 100,
@@ -39,6 +43,9 @@ export const APP = {
   maxReconnectAttempts: 5,
   portCheckMaxAttempts: 15,
 };
+
+export const VERSION = APP.version;
+export const VERSION_DISPLAY = APP.versionDisplay;
 
 export const RETRY_DELAYS = [2500, 3000, 6000, 12000, 20000];
 
