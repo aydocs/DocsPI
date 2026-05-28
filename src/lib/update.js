@@ -23,7 +23,7 @@
 /// Faz 20 - Kendi kendine teshis
 /// ============================================================
 
-const APP = { name: "DocsPI", version: "5.0.0" };
+const APP = { name: "DocsPI", version: "1.0.0-beta" };
 const GITHUB_REPO = "aydocs/DocsPI";
 const GITHUB_API = "https://api.github.com/repos/aydocs/DocsPI/releases";
 const LS_KEYS = {
@@ -101,15 +101,38 @@ function parseRelease(data) {
 
 export function isNewerVersion(remoteVersion, currentVersion) {
   if (!remoteVersion) return false;
-  const r = remoteVersion.split('.').map(Number);
-  const c = currentVersion.split('.').map(Number);
-  for (let i = 0; i < Math.max(r.length, c.length); i++) {
-    const rv = r[i] || 0;
-    const cv = c[i] || 0;
-    if (rv > cv) return true;
-    if (rv < cv) return false;
-  }
-  return false;
+
+  // Semversiyon karsilastirmasi (pre-release destekli)
+  // "1.0.0-beta" -> base="1.0.0", pre="beta"
+  const parseSemver = (ver) => {
+    const match = ver.match(/^(\d+)\.(\d+)\.(\d+)-?(.+)?$/);
+    if (!match) return { major: 0, minor: 0, patch: 0, pre: '' };
+    return {
+      major: parseInt(match[1], 10),
+      minor: parseInt(match[2], 10),
+      patch: parseInt(match[3], 10),
+      pre: match[4] || '',
+    };
+  };
+
+  const r = parseSemver(remoteVersion);
+  const c = parseSemver(currentVersion);
+
+  // Base versiyon karsilastirmasi
+  if (r.major !== c.major) return r.major > c.major;
+  if (r.minor !== c.minor) return r.minor > c.minor;
+  if (r.patch !== c.patch) return r.patch > c.patch;
+
+  // Base versiyon ayniysa pre-release kontrolu
+  // Pre-release'suz surum > pre-release'li surum (1.0.0 > 1.0.0-beta)
+  if (!r.pre && c.pre) return true;
+  if (r.pre && !c.pre) return false;
+  if (!r.pre && !c.pre) return false; // Ayni versiyon
+
+  // Her ikisi de pre-release: build numarasi karsilastirmasi
+  const rBuild = parseInt(r.pre.split('.').pop(), 10) || 0;
+  const cBuild = parseInt(c.pre.split('.').pop(), 10) || 0;
+  return rBuild > cBuild;
 }
 
 // -------------------------------------------------------

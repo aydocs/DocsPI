@@ -279,6 +279,34 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.brand-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  -webkit-text-fill-color: #93c5fd;
+  line-height: 1.4;
+}
+
+[data-theme="light"] .version-badge {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+  -webkit-text-fill-color: #2563eb;
+}
+
 /* Status Badge - Refined */
 .status-badge {
   display: flex;

@@ -1469,7 +1469,10 @@ function AppContent() {
       <header className="app-header">
         <div className="brand">
           <img src="/docspi-logo.png" alt="DocsPI" className="brand-logo" />
-          <span className="brand-name">DOCSPI</span>
+          <div className="brand-name-row">
+            <span className="brand-name">DOCSPI</span>
+            <span className="version-badge">{APP.versionDisplay}</span>
+          </div>
         </div>
         <div
           className={`status-badge ${isConnected ? "active" : isProcessing ? "processing" : "passive"}`}
