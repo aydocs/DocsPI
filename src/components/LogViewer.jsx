@@ -2,14 +2,6 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Info, AlertCircle, CheckCircle, XCircle, Trash2, Copy } from 'lucide-react';
 
-const FILTERS = [
-  { key: 'all', label: 'Tümü', color: '#a1a1aa', icon: Info },
-  { key: 'error', label: 'Hata', color: '#f87171', icon: XCircle },
-  { key: 'warn', label: 'Uyarı', color: '#facc15', icon: AlertCircle },
-  { key: 'success', label: 'Başarı', color: '#4ade80', icon: CheckCircle },
-  { key: 'info', label: 'Bilgi', color: '#a78bfa', icon: Info },
-];
-
 const LOG_ICONS = {
   error: XCircle,
   warn: AlertCircle,

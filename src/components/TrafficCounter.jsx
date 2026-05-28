@@ -1,44 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Activity, Wifi } from 'lucide-react';
-
-function formatUptime(seconds) {
-  if (!seconds || seconds < 0) return '0s';
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}s ${m}d ${s}sn`;
-  if (m > 0) return `${m}d ${s}sn`;
-  return `${s}sn`;
-}
-
-function estimateDataUsage(uptimeSeconds, qualityFactor) {
-  // Kablo: basit tahmin modeli
-  // Kalite faktorune gore ortalama throughput: 5-50 Mbps arasi
-  const avgMbps = 5 + (qualityFactor / 100) * 45;
-  const totalMb = (avgMbps * uptimeSeconds) / 8; // MB cinsinden
-  if (totalMb < 1) return '1 MB alti';
-  if (totalMb < 1000) return `${Math.round(totalMb)} MB`;
-  return `${(totalMb / 1000).toFixed(1)} GB`;
-}
-
-function computeQualityScore(dnsLatencies) {
-  if (!dnsLatencies || Object.keys(dnsLatencies).length === 0) return null;
-  const vals = Object.values(dnsLatencies).filter(v => v && v < 999);
-  if (vals.length === 0) return null;
-  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-  // 0-100: 0ms = 100, 300ms = 0
-  return Math.max(0, Math.min(100, Math.round(100 - (avg / 300) * 100)));
-}
-
-function getQualityLabel(score) {
-  if (score === null) return 'Olculmedi';
-  if (score >= 90) return { text: 'Mukemmel', color: '#4ade80' };
-  if (score >= 70) return { text: 'IyI', color: '#22d3ee' };
-  if (score >= 50) return { text: 'Normal', color: '#facc15' };
-  if (score >= 30) return { text: 'Dusuk', color: '#fb923c' };
-  return { text: 'Kotu', color: '#f87171' };
-}
+import { formatUptimeShort, computeQualityScore, getQualityLabel } from '../utils';
 
 export default function TrafficCounter({ isConnected, dnsLatencies, ispName }) {
   const [uptime, setUptime] = useState(0);
@@ -101,7 +64,7 @@ export default function TrafficCounter({ isConnected, dnsLatencies, ispName }) {
             fontSize: '0.85rem', fontWeight: 700, color: '#e2e8f0',
             fontVariantNumeric: 'tabular-nums',
           }}>
-            {isConnected ? formatUptime(uptime) : '---'}
+            {isConnected ? formatUptimeShort(uptime) : '---'}
           </div>
         </div>
 
