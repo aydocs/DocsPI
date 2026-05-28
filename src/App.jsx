@@ -30,6 +30,7 @@ import {
   ZoomIn,
   HelpCircle,
   Clock,
+  AlertTriangle,
 } from "lucide-react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
@@ -62,6 +63,7 @@ import GameModePanel from "./components/GameModePanel";
 import LatencyGraph from "./components/LatencyGraph";
 import TrafficCounter from "./components/TrafficCounter";
 import UpdateNotification from "./components/UpdateNotification";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { useUpdateChecker } from "./hooks/useUpdateChecker";
 import { useTheme } from "./context/ThemeContext";
 
@@ -70,7 +72,9 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <UpdateProvider>
-          <AppContent />
+          <ErrorBoundary>
+            <AppContent />
+          </ErrorBoundary>
         </UpdateProvider>
       </ThemeProvider>
     </AuthProvider>
@@ -196,6 +200,40 @@ function AppContent() {
       localStorage.setItem("docspi_config", JSON.stringify(newConfig));
       return newConfig;
     });
+  };
+
+  const formatUptime = (seconds) => {
+    if (!seconds || seconds < 0) return '0s';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    if (h > 0) return `${h}s ${m}d ${s}sn`;
+    if (m > 0) return `${m}d ${s}sn`;
+    return `${s}sn`;
+  };
+
+  const saveProfile = (name) => {
+    const profile = {
+      id: crypto.randomUUID?.() || Date.now().toString(),
+      name,
+      config: JSON.parse(JSON.stringify(config)),
+      customDomains: config.customDomains || [],
+    };
+    const updated = [...savedProfiles, profile];
+    setSavedProfiles(updated);
+    localStorage.setItem('docspi_saved_profiles', JSON.stringify(updated));
+  };
+
+  const loadProfile = (profile) => {
+    if (profile.config) {
+      setConfig(profile.config);
+    }
+  };
+
+  const deleteProfile = (id) => {
+    const updated = savedProfiles.filter(p => p.id !== id);
+    setSavedProfiles(updated);
+    localStorage.setItem('docspi_saved_profiles', JSON.stringify(updated));
   };
 
   const updateTrayTooltip = async (status) => {

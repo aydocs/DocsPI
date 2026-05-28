@@ -1159,9 +1159,12 @@ fn start_pac_server(
     let active_connections = Arc::new(std::sync::atomic::AtomicU32::new(0));
 
     let join_handle = thread::spawn(move || {
+        let mut backoff_ms: u64 = 50;
+        const BACKOFF_MAX: u64 = 500;
         while !shutdown.load(Ordering::Relaxed) {
             match listener.accept() {
                 Ok((stream, _)) => {
+                    backoff_ms = 50;
                     let current = active_connections.load(Ordering::Relaxed);
                     if current >= MAX_PAC_CONNECTIONS {
                         drop(stream);
@@ -1183,7 +1186,8 @@ fn start_pac_server(
                     });
                 }
                 Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                    thread::sleep(Duration::from_millis(50));
+                    thread::sleep(Duration::from_millis(backoff_ms));
+                    backoff_ms = (backoff_ms * 2).min(BACKOFF_MAX);
                 }
                 Err(_) => {}
             }
@@ -1347,9 +1351,12 @@ fn notify_proxy_change() {
     };
 
     unsafe {
-        // Notify that settings have changed
-        InternetSetOptionW(null_mut(), INTERNET_OPTION_SETTINGS_CHANGED, null_mut(), 0);
-        InternetSetOptionW(null_mut(), INTERNET_OPTION_REFRESH, null_mut(), 0);
+        if InternetSetOptionW(null_mut(), INTERNET_OPTION_SETTINGS_CHANGED, null_mut(), 0) == 0 {
+            eprintln!("[WARN] InternetSetOptionW SETTINGS_CHANGED failed: {}", std::io::Error::last_os_error());
+        }
+        if InternetSetOptionW(null_mut(), INTERNET_OPTION_REFRESH, null_mut(), 0) == 0 {
+            eprintln!("[WARN] InternetSetOptionW REFRESH failed: {}", std::io::Error::last_os_error());
+        }
     }
 }
 
@@ -1557,8 +1564,9 @@ fn check_admin() -> bool {
                 &mut size,
             );
 
+            let is_elevated = result != 0 && elevation.TokenIsElevated != 0;
             CloseHandle(token);
-            result != 0 && elevation.TokenIsElevated != 0
+            is_elevated
         }
     }
     #[cfg(not(target_os = "windows"))]
@@ -2393,7 +2401,10 @@ pub fn run() {
                 let _tray = TrayIconBuilder::with_id("tray")
                     .menu(&menu)
                     .show_menu_on_left_click(false) // ✅ Sol tıkta menü açılmasın, sadece sağ tıkta
-                    .icon(app.default_window_icon().expect("app icon missing").clone())
+                    .icon(app.default_window_icon().cloned().unwrap_or_else(|| {
+                        eprintln!("[WARN] app icon missing, using default");
+                        tauri::image::Image::new(&[], 1, 1).into()
+                    }))
                     .tooltip("DocsPI - Kapalı")
                     .on_menu_event(|app, event| match event.id.as_ref() {
                         "quit" => {
@@ -2534,7 +2545,10 @@ pub fn run() {
             check_divert_running
         ])
         .build(tauri::generate_context!())
-        .expect("error while building tauri application")
+        .unwrap_or_else(|e| {
+            eprintln!("[FATAL] error while building tauri application: {}", e);
+            std::process::exit(1);
+        })
         .run(|app_handle, event| {
             if let tauri::RunEvent::ExitRequested { .. } = event {
                 let _ = clear_system_proxy();
