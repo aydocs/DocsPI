@@ -2,7 +2,7 @@
   <img src="public/docspi-logo.png" width="128" height="128" alt="DocsPI Logo" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
 </p>
 
-<h1 align="center">DocsPI v5.0</h1>
+<h1 align="center">DocsPI</h1>
 
 <p align="center">
   <b>Discord ve internet erişim engellerini aşmak için tasarlanmış; çökmeye karşı dayanıklı, modern ve çok yönlü Yerel Proxy & DPI Bypass aracı.</b>
@@ -35,7 +35,7 @@
 ## 📋 İçindekiler
 
 - [Neden DocsPI?](#-neden-docspi)
-- [v5.0.0 Yenilikleri](#-v500-yenilikleri)
+- [Yenilikler](#-yenilikler)
 - [Özellikler](#-özellikler)
 - [3 Kademeli DPI Bypass Motoru](#-3-kademeli-dpi-bypass-motoru)
 - [Güvenlik](#-güvenlik)
@@ -55,9 +55,9 @@ DocsPI, baştan aşağı **Rust (Tauri v2)** altyapısıyla kodlanmış olup **S
 
 ---
 
-## ✨ v5.0.0 Yenilikleri
+## ✨ Yenilikler
 
-DocsPI v5, baştan aşağı yenilenmiş bir mimari ve dünya standartlarında özelliklerle geliyor:
+DocsPI, baştan aşağı yenilenmiş bir mimari ve dünya standartlarında özelliklerle geliyor:
 
 *   **🌍 13 Dil Desteği** — Türkçe, İngilizce, Çince, Hintçe, İspanyolca, Fransızca, Arapça (RTL), Portekizce, Rusça, Japonca, Almanca, İtalyanca ve Korece.
 *   **🎨 Dinamik Tema Sistemi** — Koyu (Dark) ve Açık (Light) mod desteği ile tamamen özelleştirilebilir modern UI.
