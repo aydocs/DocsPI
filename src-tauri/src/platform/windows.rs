@@ -233,7 +233,7 @@ impl FirewallManager for WindowsFirewall {
             return Err("Admin gerekiyor — firewall kuralı eklenemiyor".into());
         }
         let _ = std::process::Command::new("netsh")
-            .args(&["advfirewall", "firewall", "add", "rule",
+            .args(["advfirewall", "firewall", "add", "rule",
                 &format!("name={}", rule_name), "dir=in", "action=allow",
                 "protocol=TCP", &format!("localport={}", port)])
             .creation_flags(CREATE_NO_WINDOW)
@@ -248,7 +248,7 @@ impl FirewallManager for WindowsFirewall {
             return Err("Admin gerekiyor — firewall kuralı kaldırılamıyor".into());
         }
         let _ = std::process::Command::new("netsh")
-            .args(&["advfirewall", "firewall", "delete", "rule", &format!("name={}", rule_name)])
+            .args(["advfirewall", "firewall", "delete", "rule", &format!("name={}", rule_name)])
             .creation_flags(CREATE_NO_WINDOW)
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
@@ -389,7 +389,7 @@ impl NetworkManager for WindowsNetwork {
 
         // Connection type via PowerShell
         if let Ok(ps_out) = std::process::Command::new("powershell")
-            .args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command",
+            .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command",
                 "(Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1).Name"])
             .creation_flags(CREATE_NO_WINDOW)
             .output()
@@ -406,7 +406,7 @@ impl NetworkManager for WindowsNetwork {
 
         // Geo/ISP via ip-api.com
         if let Ok(ip_out) = std::process::Command::new("powershell")
-            .args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command",
+            .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command",
                 "(Invoke-WebRequest -Uri 'http://ip-api.com/json/?fields=country,regionName,city,isp' -UseBasicParsing -TimeoutSec 3).Content"])
             .creation_flags(CREATE_NO_WINDOW)
             .output()
@@ -415,7 +415,7 @@ impl NetworkManager for WindowsNetwork {
             if let Ok(geo) = serde_json::from_str::<serde_json::Value>(&geo_txt) {
                 if let Some(isp_str) = geo.get("isp").and_then(|v| v.as_str()) {
                     let lc = isp_str.to_lowercase();
-                    let clean = lc.replace(' ', "").replace('.', "").replace(',', "");
+                    let clean = lc.replace([' ', '.', ','], "");
                     if !clean.contains("notavailable") && !clean.is_empty() {
                         name = if clean.contains("turktelekom") { "turktelekom".into() }
                             else if clean.contains("superonline") { "superonline".into() }
@@ -511,7 +511,7 @@ pub struct WindowsProcess;
 impl ProcessManager for WindowsProcess {
     fn kill_by_name(&self, name: &str) -> Result<(), String> {
         let out = std::process::Command::new("taskkill")
-            .args(&["/F", "/IM", name])
+            .args(["/F", "/IM", name])
             .creation_flags(CREATE_NO_WINDOW)
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
@@ -522,7 +522,7 @@ impl ProcessManager for WindowsProcess {
 
     fn kill_by_pid(&self, pid: u32) -> Result<(), String> {
         let out = std::process::Command::new("taskkill")
-            .args(&["/F", "/PID", &pid.to_string()])
+            .args(["/F", "/PID", &pid.to_string()])
             .creation_flags(CREATE_NO_WINDOW)
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
@@ -585,7 +585,7 @@ impl AutostartManager for WindowsAutostart {
         std::fs::write(&tmp, with_bom).map_err(|e| format!("XML yazma: {}", e))?;
 
         let out = std::process::Command::new("schtasks")
-            .args(&["/Create", "/TN", "DocsPI", "/XML", &tmp.to_string_lossy(), "/F"])
+            .args(["/Create", "/TN", "DocsPI", "/XML", &tmp.to_string_lossy(), "/F"])
             .creation_flags(CREATE_NO_WINDOW)
             .output()
             .map_err(|e| format!("schtasks: {}", e))?;
@@ -600,7 +600,7 @@ impl AutostartManager for WindowsAutostart {
             return disable_autostart_hkcu();
         }
         let _ = std::process::Command::new("schtasks")
-            .args(&["/Delete", "/TN", "DocsPI", "/F"])
+            .args(["/Delete", "/TN", "DocsPI", "/F"])
             .creation_flags(CREATE_NO_WINDOW)
             .output();
         Ok(())
@@ -611,7 +611,7 @@ impl AutostartManager for WindowsAutostart {
             return is_autostart_hkcu_enabled();
         }
         if let Ok(out) = std::process::Command::new("schtasks")
-            .args(&["/Query", "/TN", "DocsPI"])
+            .args(["/Query", "/TN", "DocsPI"])
             .creation_flags(CREATE_NO_WINDOW)
             .output()
         {
@@ -677,7 +677,7 @@ impl UwpManager for WindowsUwp {
                 } catch {}
             "#;
             let _ = std::process::Command::new("powershell")
-                .args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command", script])
+                .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command", script])
                 .creation_flags(CREATE_NO_WINDOW)
                 .status();
         });
@@ -797,7 +797,7 @@ pub fn manage_firewall_rules(enable: bool, proxy_port: u16, pac_port: u16) {
     std::thread::spawn(move || {
         for name in &["DocsDPI_Proxy", "DocsDPI_PAC"] {
             let _ = std::process::Command::new("netsh")
-                .args(&["advfirewall", "firewall", "delete", "rule", &format!("name={}", name)])
+                .args(["advfirewall", "firewall", "delete", "rule", &format!("name={}", name)])
                 .creation_flags(CREATE_NO_WINDOW)
                 .stdout(std::process::Stdio::null())
                 .stderr(std::process::Stdio::null())
@@ -805,14 +805,14 @@ pub fn manage_firewall_rules(enable: bool, proxy_port: u16, pac_port: u16) {
         }
         if enable {
             let _ = std::process::Command::new("netsh")
-                .args(&["advfirewall", "firewall", "add", "rule", "name=DocsDPI_Proxy",
+                .args(["advfirewall", "firewall", "add", "rule", "name=DocsDPI_Proxy",
                     "dir=in", "action=allow", "protocol=TCP", &format!("localport={}", proxy_port)])
                 .creation_flags(CREATE_NO_WINDOW)
                 .stdout(std::process::Stdio::null())
                 .stderr(std::process::Stdio::null())
                 .status();
             let _ = std::process::Command::new("netsh")
-                .args(&["advfirewall", "firewall", "add", "rule", "name=DocsDPI_PAC",
+                .args(["advfirewall", "firewall", "add", "rule", "name=DocsDPI_PAC",
                     "dir=in", "action=allow", "protocol=TCP", &format!("localport={}", pac_port)])
                 .creation_flags(CREATE_NO_WINDOW)
                 .stdout(std::process::Stdio::null())
@@ -821,6 +821,3 @@ pub fn manage_firewall_rules(enable: bool, proxy_port: u16, pac_port: u16) {
         }
     });
 }
-
-
-

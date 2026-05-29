@@ -157,6 +157,3 @@ impl DivertManager for IosDivert {
     fn find_engine(&self, _exe_name: &str) -> Option<std::path::PathBuf> { None }
     fn engine_file_name(&self) -> String { "docspi-divert-ios".to_string() }
 }
-
-
-

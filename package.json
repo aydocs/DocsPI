@@ -1,7 +1,7 @@
 {
   "name": "docspi",
   "private": true,
-  "version": "1.0.16-beta.16",
+  "version": "1.0.17-beta.17",
   "author": "aydocs",
   "repository": {
     "type": "git",
@@ -43,15 +43,3 @@
     "vite": "^7.0.4"
   }
 }
-// perf(pac): optimize PAC file generation with template caching
-
-// test(rust): add unit tests for proxy manager traits
-
-// feat(dns): add DNS-over-HTTPS support for Cloudflare and Google
-
-// feat(game): add Steam and Epic Games launcher bypass rules
-
-// feat(autostart): add Windows Task Scheduler integration
-
-
-

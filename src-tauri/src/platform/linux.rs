@@ -31,30 +31,30 @@ impl ProxyManager for LinuxProxy {
 
         // GNOME
         let _ = std::process::Command::new("gsettings")
-            .args(&["set", "org.gnome.system.proxy", "mode", "manual"])
+            .args(["set", "org.gnome.system.proxy", "mode", "manual"])
             .status();
         let _ = std::process::Command::new("gsettings")
-            .args(&["set", "org.gnome.system.proxy.http", "host", proxy_addr])
+            .args(["set", "org.gnome.system.proxy.http", "host", proxy_addr])
             .status();
         let _ = std::process::Command::new("gsettings")
-            .args(&["set", "org.gnome.system.proxy.http", "port", &port.to_string()])
+            .args(["set", "org.gnome.system.proxy.http", "port", &port.to_string()])
             .status();
         let _ = std::process::Command::new("gsettings")
-            .args(&["set", "org.gnome.system.proxy.https", "host", proxy_addr])
+            .args(["set", "org.gnome.system.proxy.https", "host", proxy_addr])
             .status();
         let _ = std::process::Command::new("gsettings")
-            .args(&["set", "org.gnome.system.proxy.https", "port", &port.to_string()])
+            .args(["set", "org.gnome.system.proxy.https", "port", &port.to_string()])
             .status();
 
         // KDE
         let _ = std::process::Command::new("kwriteconfig5")
-            .args(&["--file", "kioslaverc", "--group", "Proxy Settings", "--key", "ProxyType", "1"])
+            .args(["--file", "kioslaverc", "--group", "Proxy Settings", "--key", "ProxyType", "1"])
             .status();
         let _ = std::process::Command::new("kwriteconfig5")
-            .args(&["--file", "kioslaverc", "--group", "Proxy Settings", "--key", "httpProxy", &proxy])
+            .args(["--file", "kioslaverc", "--group", "Proxy Settings", "--key", "httpProxy", &proxy])
             .status();
         let _ = std::process::Command::new("kwriteconfig5")
-            .args(&["--file", "kioslaverc", "--group", "Proxy Settings", "--key", "httpsProxy", &proxy])
+            .args(["--file", "kioslaverc", "--group", "Proxy Settings", "--key", "httpsProxy", &proxy])
             .status();
 
         // Env
@@ -66,7 +66,7 @@ impl ProxyManager for LinuxProxy {
 
     fn clear_proxy(&self) -> Result<(), String> {
         let _ = std::process::Command::new("gsettings")
-            .args(&["set", "org.gnome.system.proxy", "mode", "none"])
+            .args(["set", "org.gnome.system.proxy", "mode", "none"])
             .status();
         std::env::remove_var("http_proxy");
         std::env::remove_var("https_proxy");
@@ -90,7 +90,7 @@ impl FirewallManager for LinuxFirewall {
             return Err("Root gerekiyor — Linux firewall için root gerekli".into());
         }
         let _ = std::process::Command::new("iptables")
-            .args(&["-A", "INPUT", "-p", "tcp", "--dport", &port.to_string(), "-j", "ACCEPT",
+            .args(["-A", "INPUT", "-p", "tcp", "--dport", &port.to_string(), "-j", "ACCEPT",
                      "-m", "comment", "--comment", rule_name])
             .status();
         Ok(())
@@ -101,7 +101,7 @@ impl FirewallManager for LinuxFirewall {
             return Err("Root gerekiyor — Linux firewall kuralı kaldırılamıyor".into());
         }
         let _ = std::process::Command::new("sh")
-            .args(&["-c", &format!("iptables-save 2>/dev/null | grep -v '{}' | iptables-restore 2>/dev/null", rule_name)])
+            .args(["-c", &format!("iptables-save 2>/dev/null | grep -v '{}' | iptables-restore 2>/dev/null", rule_name)])
             .status();
         Ok(())
     }
@@ -119,10 +119,10 @@ impl DnsManager for LinuxDns {
             return Err("Root gerekiyor — Linux DNS ayarı için root gerekli".into());
         }
         let _ = std::process::Command::new("resolvectl")
-            .args(&["dns", "global", dns_ip])
+            .args(["dns", "global", dns_ip])
             .status();
         let _ = std::process::Command::new("sh")
-            .args(&["-c", &format!("echo 'nameserver {}' > /etc/resolv.conf 2>/dev/null", dns_ip)])
+            .args(["-c", &format!("echo 'nameserver {}' > /etc/resolv.conf 2>/dev/null", dns_ip)])
             .status();
         Ok(())
     }
@@ -133,7 +133,7 @@ impl DnsManager for LinuxDns {
             return;
         }
         let _ = std::process::Command::new("resolvectl")
-            .args(&["dns", "global", ""])
+            .args(["dns", "global", ""])
             .status();
     }
 
@@ -141,7 +141,7 @@ impl DnsManager for LinuxDns {
         let mut servers = Vec::new();
 
         if let Ok(out) = std::process::Command::new("resolvectl")
-            .args(&["dns"])
+            .args(["dns"])
             .output()
         {
             let text = String::from_utf8_lossy(&out.stdout);
@@ -189,7 +189,7 @@ impl NetworkManager for LinuxNetwork {
 
         // ip route to find default interface
         if let Ok(out) = std::process::Command::new("sh")
-            .args(&["-c", "ip route get 1.1.1.1 2>/dev/null | head -1 | awk '{print $5}'"])
+            .args(["-c", "ip route get 1.1.1.1 2>/dev/null | head -1 | awk '{print $5}'"])
             .output()
         {
             let iface = String::from_utf8_lossy(&out.stdout).trim().to_string();
@@ -206,14 +206,14 @@ impl NetworkManager for LinuxNetwork {
 
         // ip-api.com
         if let Ok(geo_out) = std::process::Command::new("curl")
-            .args(&["-s", "--max-time", "3", "http://ip-api.com/json/?fields=country,regionName,city,isp"])
+            .args(["-s", "--max-time", "3", "http://ip-api.com/json/?fields=country,regionName,city,isp"])
             .output()
         {
             let txt = String::from_utf8_lossy(&geo_out.stdout);
             if let Ok(geo) = serde_json::from_str::<serde_json::Value>(&txt) {
                 if let Some(isp_str) = geo.get("isp").and_then(|v| v.as_str()) {
                     let clean = isp_str.to_lowercase()
-                        .replace(' ', "").replace('.', "").replace(',', "");
+                        .replace([' ', '.', ','], "");
                     if !clean.contains("notavailable") && !clean.is_empty() {
                         info.name = clean;
                     }
@@ -230,7 +230,7 @@ impl NetworkManager for LinuxNetwork {
 
     fn get_safe_lan_ip(&self) -> String {
         if let Ok(out) = std::process::Command::new("sh")
-            .args(&["-c", "ip -4 addr show | grep -oP '(?<=inet\\s)\\d+\\.\\d+\\.\\d+\\.\\d+' | grep -v '127.0.0.1' | head -1"])
+            .args(["-c", "ip -4 addr show | grep -oP '(?<=inet\\s)\\d+\\.\\d+\\.\\d+\\.\\d+' | grep -v '127.0.0.1' | head -1"])
             .output()
         {
             let ip = String::from_utf8_lossy(&out.stdout).trim().to_string();
@@ -253,7 +253,7 @@ pub struct LinuxProcess;
 impl ProcessManager for LinuxProcess {
     fn kill_by_name(&self, name: &str) -> Result<(), String> {
         std::process::Command::new("pkill")
-            .args(&["-f", name])
+            .args(["-f", name])
             .status()
             .map_err(|e| format!("pkill: {}", e))?;
         Ok(())
@@ -319,10 +319,10 @@ WantedBy=default.target
             .map_err(|e| format!("service write: {}", e))?;
 
         let _ = std::process::Command::new("systemctl")
-            .args(&["--user", "daemon-reload"])
+            .args(["--user", "daemon-reload"])
             .status();
         let _ = std::process::Command::new("systemctl")
-            .args(&["--user", "enable", "docspi"])
+            .args(["--user", "enable", "docspi"])
             .status();
 
         Ok(())
@@ -330,14 +330,14 @@ WantedBy=default.target
 
     fn disable_autostart(&self) -> Result<(), String> {
         let _ = std::process::Command::new("systemctl")
-            .args(&["--user", "disable", "docspi"])
+            .args(["--user", "disable", "docspi"])
             .status();
         Ok(())
     }
 
     fn is_autostart_enabled(&self, _task_name: &str) -> bool {
         if let Ok(out) = std::process::Command::new("systemctl")
-            .args(&["--user", "is-enabled", "docspi"])
+            .args(["--user", "is-enabled", "docspi"])
             .output()
         {
             let s = String::from_utf8_lossy(&out.stdout).trim().to_string();
@@ -409,6 +409,3 @@ impl DivertManager for LinuxDivert {
         "docspi-divert-x86_64-unknown-linux-gnu".to_string()
     }
 }
-
-
-

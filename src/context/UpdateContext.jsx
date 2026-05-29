@@ -268,4 +268,3 @@ export function useUpdate() {
   return ctx;
 }
 
-// Commit: feat: implement UpdateContext for version management [132226]

@@ -1,7 +1,5 @@
 mod platform;
 
-
-
 use local_ip_address::list_afinet_netifas;
 
 use std::io::{Read, Write};
@@ -24,10 +22,7 @@ use tauri::Emitter;
 
 use tauri::Manager;
 
-
-
 #[cfg(target_os = "windows")]
-
 fn guard_exe_path() -> Option<std::path::PathBuf> {
 
     let exe = std::env::current_exe().ok()?;
@@ -46,17 +41,12 @@ fn guard_exe_path() -> Option<std::path::PathBuf> {
 
 }
 
-
-
 #[cfg(not(target_os = "windows"))]
-
 fn guard_exe_path() -> Option<std::path::PathBuf> {
 
     None
 
 }
-
-
 
 fn guard_process() -> &'static Mutex<Option<std::process::Child>> {
 
@@ -66,17 +56,12 @@ fn guard_process() -> &'static Mutex<Option<std::process::Child>> {
 
 }
 
-
-
 #[cfg(target_os = "windows")]
-
 fn launch_guard() {
 
     use std::os::windows::process::CommandExt;
 
     const CREATE_NO_WINDOW: u32 = 0x08000000;
-
-
 
     let exe = match guard_exe_path() {
 
@@ -94,8 +79,6 @@ fn launch_guard() {
 
     };
 
-
-
     let mut g = match guard_process().lock() {
 
         Ok(g) => g,
@@ -110,11 +93,9 @@ fn launch_guard() {
 
     }
 
-
-
     if let Ok(child) = std::process::Command::new(&exe)
 
-        .args(&[
+        .args([
 
             "-p", "-r", "-s", "-q",
 
@@ -144,16 +125,10 @@ fn launch_guard() {
 
 }
 
-
-
 #[cfg(not(target_os = "windows"))]
-
 fn launch_guard() {}
 
-
-
 #[cfg(target_os = "windows")]
-
 fn stop_guard() {
 
     let mut g = match guard_process().lock() {
@@ -174,13 +149,8 @@ fn stop_guard() {
 
 }
 
-
-
 #[cfg(not(target_os = "windows"))]
-
 fn stop_guard() {}
-
-
 
 fn divert_process() -> &'static Mutex<Option<std::process::Child>> {
 
@@ -190,10 +160,7 @@ fn divert_process() -> &'static Mutex<Option<std::process::Child>> {
 
 }
 
-
-
 #[cfg(target_os = "windows")]
-
 fn divert_exe_path() -> Option<std::path::PathBuf> {
 
     let exe = std::env::current_exe().ok()?;
@@ -214,20 +181,14 @@ fn divert_exe_path() -> Option<std::path::PathBuf> {
 
 }
 
-
-
 #[cfg(not(target_os = "windows"))]
-
 fn divert_exe_path() -> Option<std::path::PathBuf> {
 
     platform::get().divert.find_engine("docspi-divert")
 
 }
 
-
-
 #[derive(serde::Deserialize)]
-
 struct DivertConfig {
 
     mode: String,
@@ -250,19 +211,14 @@ struct DivertConfig {
 
 }
 
-
-
 fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
 
     #[cfg(target_os = "windows")]
-
     {
 
         use std::os::windows::process::CommandExt;
 
         const CREATE_NO_WINDOW: u32 = 0x08000000;
-
-
 
         let exe = match divert_exe_path() {
 
@@ -272,15 +228,11 @@ fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
 
         };
 
-
-
         let mut args: Vec<String> = vec![];
 
         args.push("--mode".to_string());
 
         args.push(config.mode.clone());
-
-
 
         if config.auto_ttl {
 
@@ -332,23 +284,17 @@ fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
 
         }
 
-
-
         let pid_file = std::env::temp_dir().join("docspi_divert.pid");
 
         args.push("--pid-file".to_string());
 
         args.push(pid_file.to_string_lossy().to_string());
 
-
-
         let dir = exe.parent()
 
             .ok_or_else(|| "Divert exe dizini alınamadı".to_string())?
 
             .to_path_buf();
-
-
 
         let mut guard = match divert_process().lock() {
 
@@ -358,15 +304,11 @@ fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
 
         };
 
-
-
         if guard.is_some() {
 
             return Ok(());
 
         }
-
-
 
         let log_file = std::env::temp_dir().join("docspi_divert.log");
 
@@ -374,17 +316,13 @@ fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
 
         let _ = std::fs::write(&log_file, header);
 
-
-
         let stdout_f = std::fs::OpenOptions::new().append(true).open(&log_file).ok();
 
         let stderr_f = stdout_f.as_ref().and_then(|f| f.try_clone().ok());
 
-        let stdout_stdio = stdout_f.map(std::process::Stdio::from).unwrap_or_else(|| std::process::Stdio::null());
+        let stdout_stdio = stdout_f.map(std::process::Stdio::from).unwrap_or_else(std::process::Stdio::null);
 
-        let stderr_stdio = stderr_f.map(std::process::Stdio::from).unwrap_or_else(|| std::process::Stdio::null());
-
-
+        let stderr_stdio = stderr_f.map(std::process::Stdio::from).unwrap_or_else(std::process::Stdio::null);
 
         match std::process::Command::new(&exe)
 
@@ -421,7 +359,6 @@ fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
     }
 
     #[cfg(not(target_os = "windows"))]
-
     {
 
         let _ = config;
@@ -431,8 +368,6 @@ fn launch_divert_process(config: &DivertConfig) -> Result<(), String> {
     }
 
 }
-
-
 
 fn stop_divert_process() {
 
@@ -456,20 +391,14 @@ fn stop_divert_process() {
 
 }
 
-
-
 fn sentinel_path() -> std::path::PathBuf {
 
     std::env::temp_dir().join("docspi_proxy_active.lock")
 
 }
 
-
-
 /// Sanal ağ adaptörlerini filtreleyen akıllı LAN IP bulucu.
-
 /// VirtualBox, VMware, Hamachi, VPN gibi sanal adaptörleri atlar.
-
 fn get_safe_lan_ip() -> String {
 
     // Filtrelenecek sanal adaptör anahtar kelimeleri (küçük harf)
@@ -544,12 +473,8 @@ fn get_safe_lan_ip() -> String {
 
     ];
 
-
-
     /// Bilinen sanal ağ IP aralıklarını kontrol eder.
-
     /// Adaptör adı filtreleri yakalayamadığında (Windows generic isimlendirme) bu devreye girer.
-
     fn is_virtual_ip_range(ip: &std::net::Ipv4Addr) -> bool {
 
         let octets = ip.octets();
@@ -584,8 +509,6 @@ fn get_safe_lan_ip() -> String {
 
     }
 
-
-
     if let Ok(netifs) = list_afinet_netifas() {
 
         for (name, ip) in &netifs {
@@ -593,8 +516,6 @@ fn get_safe_lan_ip() -> String {
             eprintln!("[NET-DEBUG] Interface: '{}' → {}", name, ip);
 
         }
-
-
 
         for (name, ip) in &netifs {
 
@@ -611,8 +532,6 @@ fn get_safe_lan_ip() -> String {
                 let is_virtual_name = VIRTUAL_KEYWORDS.iter().any(|kw| name_lower.contains(kw));
 
                 let is_virtual_range = is_virtual_ip_range(v4);
-
-
 
                 if !is_virtual_name && !is_virtual_range {
 
@@ -632,8 +551,6 @@ fn get_safe_lan_ip() -> String {
 
         }
 
-
-
         for (name, ip) in &netifs {
 
             if let IpAddr::V4(v4) = ip {
@@ -649,8 +566,6 @@ fn get_safe_lan_ip() -> String {
             }
 
         }
-
-
 
         for (_, ip) in &netifs {
 
@@ -668,16 +583,11 @@ fn get_safe_lan_ip() -> String {
 
     }
 
-
-
     "127.0.0.1".to_string()
 
 }
 
-
-
 /// Basit string hash — PAC body değişti mi kontrolü için
-
 fn simple_hash(s: &str) -> u64 {
 
     let mut h: u64 = 5381;
@@ -692,10 +602,7 @@ fn simple_hash(s: &str) -> u64 {
 
 }
 
-
-
 /// Ön-derlenmiş PAC HTTP yanıtı — her istekte format! çağırmaz
-
 pub struct PacCache {
 
     pub pac_response: Vec<u8>,
@@ -704,10 +611,7 @@ pub struct PacCache {
 
 }
 
-
-
 /// PAC sunucusu durumu: thread handle + shutdown flag + dinamik body
-
 pub struct PacServerState {
 
     pub join_handle: Mutex<Option<thread::JoinHandle<()>>>,
@@ -723,8 +627,6 @@ pub struct PacServerState {
     pub pac_url: Mutex<String>,
 
 }
-
-
 
 impl Default for PacServerState {
 
@@ -756,20 +658,14 @@ impl Default for PacServerState {
 
 }
 
-
-
 const PAC_PORT_START: u16 = 8787;
 
 const PAC_PORT_END: u16 = 8887;
 
 const SUPPORT_URL: &str = "https://discord.gg/aydocs";
 
-
-
 /// Bağlantı kesildiğinde kullanılan fallback PAC: tüm trafiği DIRECT yönlendirir
-
 /// Bu sayede cihazlar internet erişimini kaybetmez
-
 fn make_pac_direct_body() -> String {
 
     r#"function FindProxyForURL(url, host) {
@@ -788,12 +684,8 @@ fn make_pac_direct_body() -> String {
 
 }
 
-
-
 /// Production PAC: yerel ağ DIRECT, diğerleri PROXY ip:port; DIRECT (fail-safe)
-
 /// dnsResolve çağrıları try-catch ile korunuyor — DNS timeout olursa PAC script çökmez
-
 fn make_pac_body(lan_ip: &str, proxy_port: u16, bypass_domains: &[String]) -> String {
 
     let proxy = format!("{}:{}", lan_ip, proxy_port);
@@ -854,8 +746,6 @@ fn make_pac_body(lan_ip: &str, proxy_port: u16, bypass_domains: &[String]) -> St
 
         return "DIRECT";
 
-
-
     //    Bu olmazsa Windows/Android/iOS "internet yok" simgesi gösterir
 
     if (shExpMatch(host, "*.msftconnecttest.com") ||
@@ -896,8 +786,6 @@ fn make_pac_body(lan_ip: &str, proxy_port: u16, bypass_domains: &[String]) -> St
 
     // Windows masaüstünde ise Registry ProxyOverride + WinHTTP bypass ile çözülür.
 
-
-
     return "PROXY {}; DIRECT";
 
 }}"#,
@@ -909,8 +797,6 @@ fn make_pac_body(lan_ip: &str, proxy_port: u16, bypass_domains: &[String]) -> St
     )
 
 }
-
-
 
 fn make_setup_html(pac_url: &str) -> String {
 
@@ -956,8 +842,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 .container {{ width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 20px; }}
 
-
-
 /* Header */
 
 .header {{ text-align: center; margin-bottom: 10px; animation: fadeDown 0.6s ease; }}
@@ -966,15 +850,11 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 .subtitle {{ font-size: 0.9rem; color: var(--text-muted); }}
 
-
-
 /* Card */
 
 .card {{ background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: fadeUp 0.6s ease; }}
 
 .card-title {{ font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }}
-
-
 
 /* Input Group */
 
@@ -984,8 +864,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 .url-input:focus {{ border-color: var(--primary); }}
 
-
-
 /* Copy Button */
 
 .btn-copy {{ width: 100%; height: 50px; background: var(--primary); color: #fff; font-size: 1.05rem; font-weight: 600; padding: 0 20px; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }}
@@ -994,15 +872,11 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 .btn-copy.success {{ background: var(--success); box-shadow: 0 4px 12px rgba(34,197,94,0.3); }}
 
-
-
 /* Guide Button */
 
 .btn-guide {{ display: inline-flex; align-items: center; justify-content: center; background: var(--success); color: #fff; text-decoration: none; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; border: none; width: 100%; margin-top: 12px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(34,197,94,0.3); }}
 
 .btn-guide:active {{ transform: scale(0.98); opacity: 0.9; }}
-
-
 
 /* Steps */
 
@@ -1014,8 +888,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 .step-item strong {{ color: #e2e8f0; font-weight: 600; display: block; margin-bottom: 2px; }}
 
-
-
 /* Language Switcher */
 
 .lang-switcher {{ display: flex; justify-content: center; gap: 12px; margin-bottom: 8px; animation: fadeDown 0.6s ease; }}
@@ -1024,21 +896,15 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 .lang-btn.active {{ background: var(--primary); border-color: var(--primary); font-weight: 700; box-shadow: 0 0 15px rgba(59,130,246,0.3); }}
 
-
-
 /* Divider */
 
 .divider {{ height: 1px; background: var(--border); margin: 24px 0; }}
-
-
 
 /* Animations */
 
 @keyframes fadeUp {{ from {{ opacity: 0; transform: translateY(15px); }} to {{ opacity: 1; transform: translateY(0); }} }}
 
 @keyframes fadeDown {{ from {{ opacity: 0; transform: translateY(-15px); }} to {{ opacity: 1; transform: translateY(0); }} }}
-
-
 
 /* Notice */
 
@@ -1062,8 +928,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
     </div>
 
-
-
     <header class="header">
 
         <h1 class="title" data-tr="DocsPI'a Bağlan" data-en="Connect to DocsPI">DocsPI'a Bağlan</h1>
@@ -1071,8 +935,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
         <p class="subtitle" data-tr="İnternet trafiğinizi şifreleyin ve engelleri aşın" data-en="Bypass Internet Restrictions">İnternet Engellerini Aşın</p>
 
     </header>
-
-
 
     <div class="notice" style="margin-top: 0; margin-bottom: 20px;">
 
@@ -1086,8 +948,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
     </div>
 
-
-
     <div class="card">
 
         <div class="card-title">
@@ -1096,15 +956,11 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
         </div>
 
-
-
         <div class="input-group">
 
             <input type="text" class="url-input" id="pacurl" value="{}" readonly onclick="this.select();">
 
         </div>
-
-
 
         <button class="btn-copy" id="copybtn" data-tr="Adresi Kopyala" data-en="Copy Address">
 
@@ -1112,19 +968,13 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
         </button>
 
-
-
         <a href="https://docspi.vercel.app/proxy" target="_blank" class="btn-guide" data-tr="Görsel Kurulum Rehberi" data-en="Visual Setup Guide">
 
             Görsel Kurulum Rehberi
 
         </a>
 
-
-
         <div class="divider"></div>
-
-
 
         <div class="card-title" style="font-size:0.95rem; margin-bottom:12px;" data-tr="Nasıl yapılır kısaca?" data-en="Quick Guide">Nasıl yapılır kısaca?</div>
 
@@ -1168,8 +1018,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 </div>
 
-
-
 <script>
 
 (function() {{
@@ -1179,8 +1027,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
     var btn = document.getElementById('copybtn');
 
     var currentLang = 'tr';
-
-
 
     function setLanguage(lang) {{
 
@@ -1196,8 +1042,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
         document.getElementById('btn-en').classList.toggle('active', lang === 'en');
 
-        
-
         // Kopyalanmış buton metnini koruyalım eğer o andaysa
 
         if (btn.classList.contains('success')) {{
@@ -1208,13 +1052,9 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
     }}
 
-
-
     document.getElementById('btn-tr').onclick = function() {{ setLanguage('tr'); }};
 
     document.getElementById('btn-en').onclick = function() {{ setLanguage('en'); }};
-
-
 
     function tryCopy() {{
 
@@ -1234,8 +1074,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
     }}
 
-
-
     function showSuccess() {{
 
         var originalText = btn.getAttribute('data-' + currentLang);
@@ -1253,8 +1091,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
         }}, 2500);
 
     }}
-
-
 
     function fallbackCopyTextToClipboard() {{
 
@@ -1286,8 +1122,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
     }}
 
-
-
     btn.onclick = tryCopy;
 
 }})();
@@ -1304,8 +1138,6 @@ body {{ background-color: var(--bg-color); color: var(--text-main); line-height:
 
 }
 
-
-
 fn html_escape(s: &str) -> String {
 
     s.replace('&', "&amp;")
@@ -1318,16 +1150,10 @@ fn html_escape(s: &str) -> String {
 
 }
 
-
-
 /// Absolute URL'den path kısmını çıkarır.
-
 /// "http://192.168.1.5:8787/proxy.pac" → "/proxy.pac"
-
 /// "http://192.168.1.5:8787/"          → "/"
-
 /// "/proxy.pac"                         → "/proxy.pac"  (zaten relative)
-
 fn normalize_path(raw: &str) -> &str {
 
     if let Some(pos) = raw.find("://") {
@@ -1348,8 +1174,6 @@ fn normalize_path(raw: &str) -> &str {
 
 }
 
-
-
 fn handle_pac_request(
 
     stream: TcpStream,
@@ -1366,21 +1190,15 @@ fn handle_pac_request(
 
     let _ = stream.set_write_timeout(Some(Duration::from_secs(2)));
 
-
-
     let mut reader = std::io::BufReader::new(stream);
 
     let mut first_line = String::new();
-
-
 
     if std::io::BufRead::read_line(&mut reader, &mut first_line).is_err() || first_line.is_empty() {
 
         return;
 
     }
-
-
 
     // TCP RST önleme — request header'ları tamamen tüketilmeli
 
@@ -1398,11 +1216,7 @@ fn handle_pac_request(
 
     }
 
-
-
     let mut stream = reader.into_inner();
-
-
 
     let raw_path = first_line
 
@@ -1420,11 +1234,7 @@ fn handle_pac_request(
 
     let path = normalize_path(raw_path);
 
-
-
     let is_get = first_line.to_uppercase().starts_with("GET ");
-
-
 
     if is_get && path == "/logo" {
 
@@ -1448,8 +1258,6 @@ fn handle_pac_request(
 
     }
 
-
-
     // Bazı senaryolarda tarayıcılar absolute URL (http://ip:port/proxy.pac) olarak gönderebilir.
 
     if is_get && (path.ends_with("/proxy.pac") || path.ends_with("/wpad.dat")) {
@@ -1463,8 +1271,6 @@ fn handle_pac_request(
             .unwrap_or_else(|_| make_pac_direct_body());
 
         let current_hash = simple_hash(&current_body);
-
-
 
         // Dinamik Cache-Control: PROXY aktifken 60s, DIRECT modda 0
 
@@ -1480,13 +1286,9 @@ fn handle_pac_request(
 
         };
 
-
-
         let mode_bit: u64 = if is_direct_mode { 1 } else { 0 };
 
         let cache_key = current_hash.wrapping_add(mode_bit);
-
-
 
         if let Ok(mut cache) = pac_cache.lock() {
 
@@ -1536,8 +1338,6 @@ fn handle_pac_request(
 
     }
 
-
-
     if !is_get {
 
         let _ = stream
@@ -1549,8 +1349,6 @@ fn handle_pac_request(
         return;
 
     }
-
-
 
     let (status, content_type, body) = if path == "/" || path.is_empty() {
 
@@ -1569,8 +1367,6 @@ fn handle_pac_request(
         ("404 Not Found", "text/plain", String::new())
 
     };
-
-
 
     let response = format!(
 
@@ -1592,23 +1388,15 @@ fn handle_pac_request(
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct PacResponse {
 
     pac_port: u16,
 
 }
 
-
-
 /// P1-FIX: PAC sunucusu eşzamanlı bağlantı limiti
-
 const MAX_PAC_CONNECTIONS: u32 = 50;
-
-
 
 fn manage_firewall_rules(enable: bool, proxy_port: u16, pac_port: u16) {
 
@@ -1632,10 +1420,7 @@ fn manage_firewall_rules(enable: bool, proxy_port: u16, pac_port: u16) {
 
 }
 
-
-
 #[tauri::command]
-
 fn start_pac_server(
 
     proxy_port: u16,
@@ -1648,8 +1433,6 @@ fn start_pac_server(
 
     let lan_ip = get_safe_lan_ip();
 
-
-
     // PAC body'yi güncelle — proxy moduna geç
 
     let new_pac_body = make_pac_body(&lan_ip, proxy_port, &bypass_domains);
@@ -1659,8 +1442,6 @@ fn start_pac_server(
         *body = new_pac_body;
 
     }
-
-
 
     // Sunucu zaten çalışıyorsa, sadece body güncellendi — port bilgisini döndür
 
@@ -1688,13 +1469,9 @@ fn start_pac_server(
 
     drop(guard); // Lock'u serbest bırak
 
-
-
     // Ama yerel cihazların güvenliği için bind adresi sabitlenir
 
     let bind_addr = "0.0.0.0";
-
-
 
     // Dinamik PAC port: 8787-8887 arasında müsait olanı bul
 
@@ -1748,17 +1525,10 @@ fn start_pac_server(
 
     listener.set_nonblocking(true).map_err(|e| e.to_string())?;
 
-
-
     #[cfg(target_os = "windows")]
-
     manage_firewall_rules(true, proxy_port, found_port);
 
-
-
     let pac_url = format!("http://{}:{}/proxy.pac", lan_ip, found_port);
-
-
 
     if let Ok(mut p) = state.pac_port.lock() {
 
@@ -1772,8 +1542,6 @@ fn start_pac_server(
 
     }
 
-
-
     let shutdown = Arc::clone(&state.shutdown);
 
     shutdown.store(false, Ordering::Relaxed);
@@ -1784,11 +1552,7 @@ fn start_pac_server(
 
     let pac_url_for_thread = pac_url.clone();
 
-
-
     let active_connections = Arc::new(std::sync::atomic::AtomicU32::new(0));
-
-
 
     let join_handle = thread::spawn(move || {
 
@@ -1815,8 +1579,6 @@ fn start_pac_server(
                     }
 
                     active_connections.fetch_add(1, Ordering::Relaxed);
-
-
 
                     let body = Arc::clone(&pac_body_arc);
 
@@ -1860,8 +1622,6 @@ fn start_pac_server(
 
     });
 
-
-
     let mut guard = state.join_handle.lock().map_err(|e| e.to_string())?;
 
     *guard = Some(join_handle);
@@ -1874,14 +1634,9 @@ fn start_pac_server(
 
 }
 
-
-
 /// Bağlantı kesildiğinde PAC body'yi DIRECT moduna geçir.
-
 /// Sunucu çalışmaya devam eder — cihazlar internet erişimini kaybetmez.
-
 #[tauri::command]
-
 fn stop_pac_server(state: tauri::State<'_, PacServerState>) -> Result<(), String> {
 
     // Sunucuyu kapatmak yerine PAC body'yi DIRECT moduna geçir
@@ -1892,8 +1647,6 @@ fn stop_pac_server(state: tauri::State<'_, PacServerState>) -> Result<(), String
 
     }
 
-
-
     if let Ok(mut cache) = state.pac_cache.lock() {
 
         cache.body_hash = 0;
@@ -1902,22 +1655,14 @@ fn stop_pac_server(state: tauri::State<'_, PacServerState>) -> Result<(), String
 
     }
 
-
-
     #[cfg(target_os = "windows")]
-
     manage_firewall_rules(false, 0, 0);
-
-
 
     Ok(())
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct ConfigResponse {
 
     port: u16,
@@ -1928,10 +1673,7 @@ struct ConfigResponse {
 
 }
 
-
-
 #[tauri::command]
-
 fn get_sidecar_config(
 
     allow_lan_sharing: bool,
@@ -1954,8 +1696,6 @@ fn get_sidecar_config(
 
     };
 
-
-
     // Öncelikli Portlar: 8080 - 8090 arası kontrol et
 
     let mut selected_port = 0;
@@ -1972,8 +1712,6 @@ fn get_sidecar_config(
 
     }
 
-
-
     if selected_port == 0 {
 
         if let Ok(listener) = TcpListener::bind((bind_addr, 0)) {
@@ -1988,21 +1726,15 @@ fn get_sidecar_config(
 
     }
 
-
-
     if selected_port == 0 {
 
         return Err("Uygun port bulunamadı.".to_string());
 
     }
 
-
-
     // Yerel IP Adresini Bul (LAN Paylaşımı için) — Sanal adaptörleri filtreler
 
     let lan_ip = get_safe_lan_ip();
-
-
 
     Ok(ConfigResponse {
 
@@ -2016,12 +1748,8 @@ fn get_sidecar_config(
 
 }
 
-
-
 /// Registry proxy işlemlerini serialize eden global lock
-
 /// set_system_proxy ve clear_system_proxy eş zamanlı çağrılabilir (reconnect sırasında)
-
 fn proxy_lock() -> &'static Mutex<()> {
 
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
@@ -2030,10 +1758,7 @@ fn proxy_lock() -> &'static Mutex<()> {
 
 }
 
-
-
 /// P0-FIX-3: Poisoned mutex recovery — panic sonrası bile proxy temizleme çalışsın
-
 fn acquire_proxy_lock() -> std::sync::MutexGuard<'static, ()> {
 
     match proxy_lock().lock() {
@@ -2052,22 +1777,16 @@ fn acquire_proxy_lock() -> std::sync::MutexGuard<'static, ()> {
 
 }
 
-
-
 #[tauri::command]
-
 fn clear_system_proxy() -> Result<(), String> {
 
     let _guard = acquire_proxy_lock();
 
     platform::get().proxy.clear_proxy()?;
 
-
-
     if check_admin() {
 
         #[cfg(target_os = "windows")]
-
         {
 
             use std::os::windows::process::CommandExt;
@@ -2076,7 +1795,7 @@ fn clear_system_proxy() -> Result<(), String> {
 
             let _ = std::process::Command::new("netsh")
 
-                .args(&["winhttp", "reset", "proxy"])
+                .args(["winhttp", "reset", "proxy"])
 
                 .creation_flags(CREATE_NO_WINDOW)
 
@@ -2094,8 +1813,6 @@ fn clear_system_proxy() -> Result<(), String> {
 
     }
 
-
-
     stop_divert_process();
 
     let _ = std::fs::remove_file(sentinel_path());
@@ -2104,34 +1821,23 @@ fn clear_system_proxy() -> Result<(), String> {
 
 }
 
-
-
 /// Notify Windows that internet settings have changed
-
 /// This forces browsers to immediately pick up the new proxy settings
-
 fn notify_proxy_change() {
 
     platform::get().proxy.notify_change();
 
 }
 
-
-
 /// P1-FIX: UWP AppContainer'ları arka planda otomatik olarak Loopback Proxy için yetkilendirir.
-
 /// Bu sayede Roblox, Speedtest ve diğer Windows Mağaza uygulamaları 127.0.0.1 proxy sunucusuna başarılı şekilde bağlanabilir.
-
 fn exempt_all_uwp_apps() {
 
     platform::get().uwp.exempt_loopback();
 
 }
 
-
-
 #[tauri::command]
-
 fn set_system_proxy(port: u16, enable_winhttp: bool, custom_bypass_domains: Vec<String>) -> Result<(), String> {
 
     let _guard = acquire_proxy_lock();
@@ -2142,20 +1848,15 @@ fn set_system_proxy(port: u16, enable_winhttp: bool, custom_bypass_domains: Vec<
 
     }
 
-
-
     let lan_ip = get_safe_lan_ip();
 
     platform::get().proxy.set_proxy(&lan_ip, port, &custom_bypass_domains)?;
-
-
 
     if check_admin() {
 
         exempt_all_uwp_apps();
 
         #[cfg(target_os = "windows")]
-
         {
 
             use std::os::windows::process::CommandExt;
@@ -2200,7 +1901,7 @@ fn set_system_proxy(port: u16, enable_winhttp: bool, custom_bypass_domains: Vec<
 
                 let _ = std::process::Command::new("netsh")
 
-                    .args(&["winhttp", "set", "proxy", &format!("{}:{}", proxy_addr, port), &winhttp_bypass])
+                    .args(["winhttp", "set", "proxy", &format!("{}:{}", proxy_addr, port), &winhttp_bypass])
 
                     .creation_flags(CREATE_NO_WINDOW)
 
@@ -2218,20 +1919,14 @@ fn set_system_proxy(port: u16, enable_winhttp: bool, custom_bypass_domains: Vec<
 
     }
 
-
-
     let _ = std::fs::write(sentinel_path(), format!("port={}", port));
 
     Ok(())
 
 }
 
-
-
 /// P1-FIX: Tooltip uzunluk sınırı — Windows tooltip limiti 128 karakter
-
 #[tauri::command]
-
 fn update_tray_tooltip(app: tauri::AppHandle, tooltip: String) -> Result<(), String> {
 
     let sanitized: String = tooltip.chars().take(128).collect();
@@ -2248,12 +1943,8 @@ fn update_tray_tooltip(app: tauri::AppHandle, tooltip: String) -> Result<(), Str
 
 }
 
-
-
 /// P1-FIX: Port aralığı kısıtlama — XSS ile localhost port taraması engellenir
-
 #[tauri::command]
-
 fn check_port_open(port: u16) -> bool {
 
     if port < 1024 {
@@ -2274,17 +1965,12 @@ fn check_port_open(port: u16) -> bool {
 
 }
 
-
-
 #[tauri::command]
-
 async fn test_bypass_connection(proxy_port: u16) -> Result<bool, String> {
 
     let target = "google.com:443";
 
     let proxy_addr = format!("127.0.0.1:{}", proxy_port);
-
-    
 
     match TcpStream::connect_timeout(
 
@@ -2300,8 +1986,6 @@ async fn test_bypass_connection(proxy_port: u16) -> Result<bool, String> {
 
             let _ = stream.set_read_timeout(Some(Duration::from_secs(2)));
 
-            
-
             let connect_req = format!("CONNECT {} HTTP/1.1\r\nHost: {}\r\n\r\n", target, target);
 
             if stream.write_all(connect_req.as_bytes()).is_err() {
@@ -2309,8 +1993,6 @@ async fn test_bypass_connection(proxy_port: u16) -> Result<bool, String> {
                 return Ok(false);
 
             }
-
-            
 
             let mut response = [0u8; 1024];
 
@@ -2344,17 +2026,12 @@ async fn test_bypass_connection(proxy_port: u16) -> Result<bool, String> {
 
 }
 
-
-
 #[tauri::command]
-
 fn check_admin() -> bool {
 
     platform::get().network.is_admin()
 
 }
-
-
 
 fn perform_app_exit(app: &tauri::AppHandle) {
 
@@ -2366,12 +2043,8 @@ fn perform_app_exit(app: &tauri::AppHandle) {
 
 }
 
-
-
 /// Uygulama açıldığında eski docspi-proxy süreçlerini temizle (Zombi süreç önleme)
-
 #[tauri::command]
-
 fn save_sidecar_pid(pid: u32) {
 
     let pid_file = std::env::temp_dir().join("docspi_sidecar.pid");
@@ -2380,10 +2053,7 @@ fn save_sidecar_pid(pid: u32) {
 
 }
 
-
-
 #[tauri::command]
-
 fn kill_zombie_sidecar() -> Result<String, String> {
 
     let pid_file = std::env::temp_dir().join("docspi_sidecar.pid");
@@ -2406,10 +2076,7 @@ fn kill_zombie_sidecar() -> Result<String, String> {
 
 }
 
-
-
 #[tauri::command]
-
 fn start_divert_engine(config: DivertConfig) -> Result<(), String> {
 
     if !check_admin() {
@@ -2422,10 +2089,7 @@ fn start_divert_engine(config: DivertConfig) -> Result<(), String> {
 
 }
 
-
-
 #[tauri::command]
-
 fn stop_divert_engine() -> Result<(), String> {
 
     stop_divert_process();
@@ -2434,10 +2098,7 @@ fn stop_divert_engine() -> Result<(), String> {
 
 }
 
-
-
 #[tauri::command]
-
 fn check_divert_running() -> bool {
 
     let mut g = match divert_process().lock() {
@@ -2472,10 +2133,7 @@ fn check_divert_running() -> bool {
 
 }
 
-
-
 #[tauri::command]
-
 fn get_divert_log() -> String {
 
     let log_file = std::env::temp_dir().join("docspi_divert.log");
@@ -2484,10 +2142,7 @@ fn get_divert_log() -> String {
 
 }
 
-
-
 #[tauri::command]
-
 fn kill_zombie_divert() -> Result<String, String> {
 
     let pid_file = std::env::temp_dir().join("docspi_divert.pid");
@@ -2510,10 +2165,7 @@ fn kill_zombie_divert() -> Result<String, String> {
 
 }
 
-
-
 #[tauri::command]
-
 async fn check_dns_latency(dns_ip: String) -> Result<u32, String> {
 
     // Sadece bilinen DNS IP'lerini kabul et (Arbitrary internal network scan'i önler)
@@ -2532,15 +2184,11 @@ async fn check_dns_latency(dns_ip: String) -> Result<u32, String> {
 
     ];
 
-
-
     if !allowed_ips.contains(&dns_ip.as_str()) {
 
         return Err("Bilinmeyen DNS adresi".to_string());
 
     }
-
-
 
     let start = std::time::Instant::now();
 
@@ -2549,8 +2197,6 @@ async fn check_dns_latency(dns_ip: String) -> Result<u32, String> {
         .parse()
 
         .map_err(|e: std::net::AddrParseError| e.to_string())?;
-
-
 
     match std::net::TcpStream::connect_timeout(&addr, std::time::Duration::from_millis(1500)) {
 
@@ -2562,10 +2208,7 @@ async fn check_dns_latency(dns_ip: String) -> Result<u32, String> {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct DnsBenchmarkEntry {
 
     provider: String,
@@ -2578,10 +2221,7 @@ struct DnsBenchmarkEntry {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct DnsBenchmarkOutput {
 
     results: Vec<DnsBenchmarkEntry>,
@@ -2594,10 +2234,7 @@ struct DnsBenchmarkOutput {
 
 }
 
-
-
 #[tauri::command]
-
 async fn dns_benchmark() -> DnsBenchmarkOutput {
 
     let dns_servers = [
@@ -2614,11 +2251,7 @@ async fn dns_benchmark() -> DnsBenchmarkOutput {
 
     ];
 
-
-
     let mut handles = Vec::new();
-
-
 
     for (provider, ip) in &dns_servers {
 
@@ -2658,8 +2291,6 @@ async fn dns_benchmark() -> DnsBenchmarkOutput {
 
     }
 
-
-
     let mut results: Vec<DnsBenchmarkEntry> = Vec::new();
 
     for handle in handles {
@@ -2672,11 +2303,7 @@ async fn dns_benchmark() -> DnsBenchmarkOutput {
 
     }
 
-
-
     results.sort_by_key(|e| e.latency_ms);
-
-
 
     let fastest = results.iter().find(|e| e.reachable).unwrap_or(&results[0]);
 
@@ -2694,35 +2321,24 @@ async fn dns_benchmark() -> DnsBenchmarkOutput {
 
 }
 
-
-
 /// Windows Task Scheduler üzerinden yönetici haklarıyla otomatik başlatma kaydeder
-
 /// tauri-plugin-autostart registry Run key kullanır — admin uygulamalar için UAC engeli var
-
 /// Task Scheduler "Run with highest privileges" bu sorunu çözer
-
 #[tauri::command]
-
 fn set_autostart_admin(enable: bool) -> Result<(), String> {
 
     #[cfg(target_os = "windows")]
-
     {
 
         use std::os::windows::process::CommandExt;
 
         const CREATE_NO_WINDOW: u32 = 0x08000000;
 
-
-
         let exe_path = std::env::current_exe()
 
             .map_err(|e| format!("Exe yolu alınamadı: {}", e))?;
 
         let exe_str = exe_path.to_string_lossy();
-
-
 
         if enable {
 
@@ -2744,8 +2360,6 @@ fn set_autostart_admin(enable: bool) -> Result<(), String> {
 
 </Task>"#, exe_str);
 
-
-
             let tmp = std::env::temp_dir().join("docspi_task.xml");
 
             let utf16_bytes: Vec<u8> = xml.encode_utf16().flat_map(|c| c.to_le_bytes()).collect();
@@ -2756,19 +2370,15 @@ fn set_autostart_admin(enable: bool) -> Result<(), String> {
 
             std::fs::write(&tmp, with_bom).map_err(|e| format!("XML yazılamadı: {}", e))?;
 
-
-
             let out = std::process::Command::new("schtasks")
 
-                .args(&["/Create", "/TN", "DocsPI", "/XML", &tmp.to_string_lossy(), "/F"])
+                .args(["/Create", "/TN", "DocsPI", "/XML", &tmp.to_string_lossy(), "/F"])
 
                 .creation_flags(CREATE_NO_WINDOW)
 
                 .output()
 
                 .map_err(|e| format!("schtasks: {}", e))?;
-
-
 
             let _ = std::fs::remove_file(&tmp);
 
@@ -2782,7 +2392,7 @@ fn set_autostart_admin(enable: bool) -> Result<(), String> {
 
             let _ = std::process::Command::new("schtasks")
 
-                .args(&["/Delete", "/TN", "DocsPI", "/F"])
+                .args(["/Delete", "/TN", "DocsPI", "/F"])
 
                 .creation_flags(CREATE_NO_WINDOW)
 
@@ -2795,7 +2405,6 @@ fn set_autostart_admin(enable: bool) -> Result<(), String> {
     }
 
     #[cfg(not(target_os = "windows"))]
-
     {
 
         let exe_path = std::env::current_exe()
@@ -2818,14 +2427,10 @@ fn set_autostart_admin(enable: bool) -> Result<(), String> {
 
 }
 
-
-
 #[tauri::command]
-
 fn check_autostart_admin() -> bool {
 
     #[cfg(target_os = "windows")]
-
     {
 
         use std::os::windows::process::CommandExt;
@@ -2834,7 +2439,7 @@ fn check_autostart_admin() -> bool {
 
         if let Ok(out) = std::process::Command::new("schtasks")
 
-            .args(&["/Query", "/TN", "DocsPI"])
+            .args(["/Query", "/TN", "DocsPI"])
 
             .creation_flags(CREATE_NO_WINDOW)
 
@@ -2851,7 +2456,6 @@ fn check_autostart_admin() -> bool {
     }
 
     #[cfg(not(target_os = "windows"))]
-
     {
 
         platform::get().autostart.is_autostart_enabled("DocsPI")
@@ -2860,10 +2464,7 @@ fn check_autostart_admin() -> bool {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct IspInfo {
 
     name: String,
@@ -2878,14 +2479,10 @@ struct IspInfo {
 
 }
 
-
-
 #[tauri::command]
-
 fn get_isp_info() -> IspInfo {
 
     #[cfg(target_os = "windows")]
-
     {
 
         let mut name = "unknown".to_string();
@@ -2896,13 +2493,9 @@ fn get_isp_info() -> IspInfo {
 
         let mut dns_servers: Vec<String> = Vec::new();
 
-
-
         use std::os::windows::process::CommandExt;
 
         const CREATE_NO_WINDOW: u32 = 0x08000000;
-
-
 
         if let Ok(output) = std::process::Command::new("ipconfig")
 
@@ -2970,11 +2563,9 @@ fn get_isp_info() -> IspInfo {
 
         }
 
-
-
         if let Ok(ps_out) = std::process::Command::new("powershell")
 
-            .args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command",
+            .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command",
 
                 "(Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1).Name"])
 
@@ -3002,11 +2593,9 @@ fn get_isp_info() -> IspInfo {
 
         }
 
-
-
         if let Ok(ip_out) = std::process::Command::new("powershell")
 
-            .args(&["-NoProfile", "-WindowStyle", "Hidden", "-Command",
+            .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command",
 
                 "(Invoke-WebRequest -Uri 'http://ip-api.com/json/?fields=country,regionName,city,isp' -UseBasicParsing -TimeoutSec 3).Content"])
 
@@ -3026,7 +2615,7 @@ fn get_isp_info() -> IspInfo {
 
                     if !isp_lower.contains("not available") && !isp_str.is_empty() {
 
-                        name = isp_lower.replace(' ', "").replace('.', "").replace(',', "");
+                        name = isp_lower.replace([' ', '.', ','], "");
 
                         if name.contains("turktelekom") { name = "turktelekom".into(); }
 
@@ -3058,8 +2647,6 @@ fn get_isp_info() -> IspInfo {
 
         }
 
-
-
         let display_name = match name.as_str() {
 
             "turktelekom" => "Türk Telekom",
@@ -3078,14 +2665,11 @@ fn get_isp_info() -> IspInfo {
 
         };
 
-
-
         IspInfo { name, display_name: display_name.to_string(), connection_type, region, dns_servers }
 
     }
 
     #[cfg(not(target_os = "windows"))]
-
     {
 
         platform::get().network.get_isp_info()
@@ -3094,10 +2678,7 @@ fn get_isp_info() -> IspInfo {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct DpiProbe {
 
     dns: String,
@@ -3110,10 +2691,7 @@ struct DpiProbe {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct DpiDetectionResult {
 
     probes: Vec<DpiProbe>,
@@ -3126,10 +2704,7 @@ struct DpiDetectionResult {
 
 }
 
-
-
 #[tauri::command]
-
 fn detect_dpi() -> DpiDetectionResult {
 
     let probes = [
@@ -3146,13 +2721,9 @@ fn detect_dpi() -> DpiDetectionResult {
 
     ];
 
-
-
     let mut results: Vec<DpiProbe> = Vec::new();
 
     let mut reachable_count = 0;
-
-
 
     for (ip, label) in &probes {
 
@@ -3172,15 +2743,11 @@ fn detect_dpi() -> DpiDetectionResult {
 
         let latency = if reachable { start.elapsed().as_millis() as u32 } else { 999 };
 
-
-
         if reachable && latency < 999 {
 
             reachable_count += 1;
 
         }
-
-
 
         results.push(DpiProbe {
 
@@ -3196,8 +2763,6 @@ fn detect_dpi() -> DpiDetectionResult {
 
     }
 
-
-
     let (recommended_strategy, severity, reason) = match reachable_count {
 
         5 => ("0".to_string(), "mild".to_string(), "Tüm DNS sunucularına erişilebiliyor. Hafif DPI — Turbo mod yeterli.".to_string()),
@@ -3207,8 +2772,6 @@ fn detect_dpi() -> DpiDetectionResult {
         _ => ("2".to_string(), "aggressive".to_string(), "Çoğu DNS sunucu engellenmiş. Ağır DPI — Güçlü Mod gerekli.".to_string()),
 
     };
-
-
 
     DpiDetectionResult {
 
@@ -3224,10 +2787,7 @@ fn detect_dpi() -> DpiDetectionResult {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct AutoConnectConfig {
 
     strategy: String,
@@ -3244,17 +2804,12 @@ struct AutoConnectConfig {
 
 }
 
-
-
 #[tauri::command]
-
 fn auto_connect_config() -> AutoConnectConfig {
 
     let isp = get_isp_info();
 
     let dpi = detect_dpi();
-
-
 
     let (dns, fallback_dns_chain) = match isp.name.as_str() {
 
@@ -3274,11 +2829,7 @@ fn auto_connect_config() -> AutoConnectConfig {
 
     };
 
-
-
     let network_mode = "smooth";
-
-
 
     AutoConnectConfig {
 
@@ -3298,22 +2849,15 @@ fn auto_connect_config() -> AutoConnectConfig {
 
 }
 
-
-
 #[tauri::command]
-
 fn get_isp_name() -> String {
 
     platform::get().network.get_isp_info().name
 
 }
 
-
-
 /// Proxy port'una TCP bağlantı süresi ölçer (ms cinsinden ping)
-
 #[tauri::command]
-
 fn get_ping(host: String, port: u16) -> u32 {
 
     const ALLOWED: &[&str] = &["1.1.1.1", "8.8.8.8", "9.9.9.9", "94.140.14.14", "208.67.222.222"];
@@ -3344,15 +2888,10 @@ fn get_ping(host: String, port: u16) -> u32 {
 
 }
 
-
-
 #[tauri::command]
-
 fn startup_proxy_cleanup() -> Result<bool, String> {
 
     let sentinel = sentinel_path();
-
-
 
     if sentinel.exists() {
 
@@ -3372,28 +2911,20 @@ fn startup_proxy_cleanup() -> Result<bool, String> {
 
     }
 
-
-
     let _ = kill_zombie_divert();
 
     Ok(false)
 
 }
 
-
-
 #[tauri::command]
-
 fn check_driver() -> bool {
 
     platform::get().divert.find_engine("docspi-divert").is_some()
 
 }
 
-
-
 #[tauri::command]
-
 fn get_driver_info() -> serde_json::Value {
 
     let installed = check_driver();
@@ -3414,14 +2945,10 @@ fn get_driver_info() -> serde_json::Value {
 
 }
 
-
-
 #[tauri::command]
-
 fn install_driver(app: tauri::AppHandle) -> Result<(), String> {
 
     #[cfg(target_os = "windows")]
-
     {
 
         let resource_path = app
@@ -3434,23 +2961,17 @@ fn install_driver(app: tauri::AppHandle) -> Result<(), String> {
 
             .join("binaries/npcap-installer.exe");
 
-
-
         if !resource_path.exists() {
 
             return Err("Sürücü dosyası bulunamadı. Lütfen uygulamayı yeniden yükleyin.".into());
 
         }
 
-
-
         let status = std::process::Command::new(resource_path)
 
             .status()
 
             .map_err(|e| e.to_string())?;
-
-
 
         if status.success() {
 
@@ -3465,7 +2986,6 @@ fn install_driver(app: tauri::AppHandle) -> Result<(), String> {
     }
 
     #[cfg(not(target_os = "windows"))]
-
     {
 
         let _ = app;
@@ -3476,10 +2996,7 @@ fn install_driver(app: tauri::AppHandle) -> Result<(), String> {
 
 }
 
-
-
 #[derive(serde::Serialize)]
-
 struct SpeedTestResult {
 
     download_speed_mbps: f64,
@@ -3490,17 +3007,12 @@ struct SpeedTestResult {
 
 }
 
-
-
 #[tauri::command]
-
 async fn speed_test() -> SpeedTestResult {
 
     let target = "1.1.1.1";
 
     let port = 443;
-
-
 
     let start = std::time::Instant::now();
 
@@ -3508,20 +3020,11 @@ async fn speed_test() -> SpeedTestResult {
 
     let mut latency_ms = 999u32;
 
-    let mut connected = false;
-
-
-
     if let Ok(addr) = addr_str.parse::<std::net::SocketAddr>() {
-
         if let Ok(mut stream) = std::net::TcpStream::connect_timeout(&addr, std::time::Duration::from_secs(3)) {
-
             latency_ms = start.elapsed().as_millis() as u32;
 
-            connected = true;
-
             let _ = stream.set_read_timeout(Some(std::time::Duration::from_secs(2)));
-
             let _ = stream.set_write_timeout(Some(std::time::Duration::from_secs(2)));
 
             let _ = stream.write_all(b"GET / HTTP/1.0\r\nHost: 1.1.1.1\r\nConnection: close\r\n\r\n");
@@ -3570,49 +3073,27 @@ async fn speed_test() -> SpeedTestResult {
 
     }
 
-
-
-    if !connected {
-
-        latency_ms = 999;
-
-    }
-
-
-
     SpeedTestResult {
-
         download_speed_mbps: 0.0,
-
         latency_ms,
-
         target: format!("{}:{}", target, port),
-
     }
 
 }
 
-
-
 #[tauri::command]
-
 fn quit_app(app: tauri::AppHandle) {
 
     perform_app_exit(&app);
 
 }
 
-
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-
 pub fn run() {
 
     platform::init();
 
     platform::get().instance.ensure_single_instance("DocsPI");
-
-
 
     tauri::Builder::default()
 
@@ -3625,7 +3106,6 @@ pub fn run() {
         .setup(|app| {
 
             #[cfg(desktop)]
-
             {
 
                 use tauri::menu::{Menu, MenuItem};
@@ -3634,11 +3114,7 @@ pub fn run() {
 
                 use tauri::Manager;
 
-
-
                 let show_i = MenuItem::with_id(app, "show", "Uygulamayı Aç", true, None::<&str>)?;
-
-                
 
                 use tauri::menu::Submenu;
 
@@ -3650,15 +3126,11 @@ pub fn run() {
 
                 let mode_submenu = Submenu::with_items(app, "Mod Değiştir", true, &[&turbo_i, &balanced_i, &strong_i])?;
 
-
-
                 let support_i =
 
                     MenuItem::with_id(app, "support", "Destekle", true, None::<&str>)?;
 
                 let quit_i = MenuItem::with_id(app, "quit", "Çıkış", true, None::<&str>)?;
-
-
 
                 use tauri::menu::PredefinedMenuItem;
 
@@ -3666,15 +3138,9 @@ pub fn run() {
 
                 let s2 = PredefinedMenuItem::separator(app)?;
 
-
-
                 let menu = Menu::with_items(app, &[&show_i, &s1, &mode_submenu, &support_i, &s2, &quit_i])?;
 
-
-
                 let is_showing = Arc::new(AtomicBool::new(false));
-
-
 
                 let _tray = TrayIconBuilder::with_id("tray")
 
@@ -3686,7 +3152,7 @@ pub fn run() {
 
                         eprintln!("[WARN] app icon missing, using default");
 
-                        tauri::image::Image::new(&[], 1, 1).into()
+                        tauri::image::Image::new(&[], 1, 1)
 
                     }))
 
@@ -3703,8 +3169,6 @@ pub fn run() {
                                 let _ = window.show();
 
                                 let _ = window.set_focus(); // ✅ Pencereyi kapatmadan önce onay kutusu için öne getir!
-
-
 
                                 let _ = window.emit("tray_quit", ());
 
@@ -3774,8 +3238,6 @@ pub fn run() {
 
                             use tauri::tray::{MouseButton, TrayIconEvent};
 
-
-
                             match event {
 
                                 TrayIconEvent::Click {
@@ -3794,8 +3256,6 @@ pub fn run() {
 
                                     is_showing.store(true, Ordering::Relaxed);
 
-
-
                                     let app = tray.app_handle();
 
                                     if let Some(window) = app.get_webview_window("main") {
@@ -3807,8 +3267,6 @@ pub fn run() {
                                         let _ = window.set_focus();
 
                                     }
-
-
 
                                     let is_showing_clone = Arc::clone(&is_showing);
 
@@ -3849,8 +3307,6 @@ pub fn run() {
                     })
 
                     .build(app)?;
-
-
 
                 if let Some(window) = app.get_webview_window("main") {
 
@@ -4015,7 +3471,6 @@ pub fn run() {
                     }
 
                     #[cfg(target_os = "windows")]
-
                     manage_firewall_rules(false, 0, 0);
 
                 }
@@ -4026,104 +3481,38 @@ pub fn run() {
 
 }
 
-
 // fix(network): handle IPv6 loopback addresses in LAN detection
-
 
 // feat(divert): add QUIC protocol blocking for aggressive DPI
 
-
 // ui(icons): add custom tray icons for connected-disconnected states
-
 
 // docs(contributing): add code style guide and PR template
 
-
 // fix(security): sanitize PAC file input to prevent injection
-
 
 // chore(deps): update React to v19.1.0
 
-
 // refactor(error): implement structured error types in Rust
-
 
 // fix(memory): fix memory leak in PAC server connection handler
 
-
 // chore(release): add GitHub Release automation with changelog
-
 
 // refactor(platform): add platform-specific build configurations
 
-
 // feat(isp): add Superonline ISP detection and bypass profiles
-
 
 // feat(dns): add custom DNS server configuration
 
-
 // refactor(constants): extract all magic numbers into named constants
-
 
 // test(unit): add tests for DNS benchmark functionality
 
-
 // docs(readme): add installation guide with screenshots
-
 
 // refactor(hooks): consolidate all API calls into useApi hook
 
-
 // feat(dns): add DNS-over-TLS support
 
-
 // feat(pac): add bypass for Microsoft Store downloads
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

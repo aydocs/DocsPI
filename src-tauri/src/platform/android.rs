@@ -210,6 +210,3 @@ impl DivertManager for AndroidDivert {
         "docspi-divert-android".to_string()
     }
 }
-
-
-

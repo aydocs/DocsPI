@@ -37,7 +37,7 @@ impl ProxyManager for MacosProxy {
 
         // Find active network service
         let output = std::process::Command::new("networksetup")
-            .args(&["-listallnetworkservices"])
+            .args(["-listallnetworkservices"])
             .output()
             .map_err(|e| format!("networksetup failed: {}", e))?;
 
@@ -55,12 +55,12 @@ impl ProxyManager for MacosProxy {
 
         // Set HTTP proxy
         let _ = std::process::Command::new("networksetup")
-            .args(&["-setwebproxy", service, proxy_addr, &port.to_string()])
+            .args(["-setwebproxy", service, proxy_addr, &port.to_string()])
             .status();
 
         // Set HTTPS proxy
         let _ = std::process::Command::new("networksetup")
-            .args(&["-setsecurewebproxy", service, proxy_addr, &port.to_string()])
+            .args(["-setsecurewebproxy", service, proxy_addr, &port.to_string()])
             .status();
 
         // Set bypass domains
@@ -80,7 +80,7 @@ impl ProxyManager for MacosProxy {
             return Err("Admin gerekiyor — macOS sistem proxy temizliği için sudo gerekli".into());
         }
         let output = std::process::Command::new("networksetup")
-            .args(&["-listallnetworkservices"])
+            .args(["-listallnetworkservices"])
             .output()
             .map_err(|e| format!("networksetup failed: {}", e))?;
 
@@ -91,10 +91,10 @@ impl ProxyManager for MacosProxy {
 
         for service in &services {
             let _ = std::process::Command::new("networksetup")
-                .args(&["-setwebproxystate", service, "off"])
+                .args(["-setwebproxystate", service, "off"])
                 .status();
             let _ = std::process::Command::new("networksetup")
-                .args(&["-setsecurewebproxystate", service, "off"])
+                .args(["-setsecurewebproxystate", service, "off"])
                 .status();
         }
 
@@ -126,14 +126,14 @@ impl FirewallManager for MacosFirewall {
         // For now use a simple pf anchor
         let rule = format!("pass in proto tcp from any to any port {} keep state", port);
         let _ = std::process::Command::new("sh")
-            .args(&["-c", &format!("echo '{}' | sudo pfctl -a 'com.docspi/{}' -f -", rule, rule_name)])
+            .args(["-c", &format!("echo '{}' | sudo pfctl -a 'com.docspi/{}' -f -", rule, rule_name)])
             .status();
         Ok(())
     }
 
     fn remove_rule(&self, rule_name: &str) -> Result<(), String> {
         let _ = std::process::Command::new("sudo")
-            .args(&["pfctl", "-a", &format!("com.docspi/{}", rule_name), "-F", "all"])
+            .args(["pfctl", "-a", &format!("com.docspi/{}", rule_name), "-F", "all"])
             .status();
         Ok(())
     }
@@ -151,7 +151,7 @@ impl DnsManager for MacosDns {
             return Err("Admin gerekiyor — macOS DNS ayarı için sudo gerekli".into());
         }
         let services_output = std::process::Command::new("networksetup")
-            .args(&["-listallnetworkservices"])
+            .args(["-listallnetworkservices"])
             .output()
             .map_err(|e| format!("networksetup: {}", e))?;
 
@@ -162,7 +162,7 @@ impl DnsManager for MacosDns {
                 continue;
             }
             let _ = std::process::Command::new("networksetup")
-                .args(&["-setdnsservers", s, dns_ip])
+                .args(["-setdnsservers", s, dns_ip])
                 .status();
         }
         Ok(())
@@ -174,7 +174,7 @@ impl DnsManager for MacosDns {
             return;
         }
         let services_output = std::process::Command::new("networksetup")
-            .args(&["-listallnetworkservices"])
+            .args(["-listallnetworkservices"])
             .output();
         if let Ok(out) = services_output {
             let text = String::from_utf8_lossy(&out.stdout);
@@ -184,7 +184,7 @@ impl DnsManager for MacosDns {
                     continue;
                 }
                 let _ = std::process::Command::new("networksetup")
-                    .args(&["-setdnsservers", s, "empty"])
+                    .args(["-setdnsservers", s, "empty"])
                     .status();
             }
         }
@@ -193,7 +193,7 @@ impl DnsManager for MacosDns {
     fn get_dns_servers(&self) -> Vec<String> {
         let mut servers = Vec::new();
         if let Ok(out) = std::process::Command::new("scutil")
-            .args(&["--dns"])
+            .args(["--dns"])
             .output()
         {
             let text = String::from_utf8_lossy(&out.stdout);
@@ -224,7 +224,7 @@ impl NetworkManager for MacosNetwork {
 
         // Get active network interface name
         if let Ok(out) = std::process::Command::new("sh")
-            .args(&["-c", "route get default 2>/dev/null | grep interface | awk '{print $2}'"])
+            .args(["-c", "route get default 2>/dev/null | grep interface | awk '{print $2}'"])
             .output()
         {
             let iface = String::from_utf8_lossy(&out.stdout).trim().to_string();
@@ -234,7 +234,7 @@ impl NetworkManager for MacosNetwork {
                 if iface.to_lowercase().contains("en") {
                     // Could be Wi-Fi (en0 usually) or Ethernet (en1-9)
                     if let Ok(airport) = std::process::Command::new("sh")
-                        .args(&["-c", "networksetup -getairportnetwork en0 2>/dev/null"])
+                        .args(["-c", "networksetup -getairportnetwork en0 2>/dev/null"])
                         .output()
                     {
                         let ap = String::from_utf8_lossy(&airport.stdout);
@@ -251,13 +251,13 @@ impl NetworkManager for MacosNetwork {
 
         // Geo/ISP via ip-api.com
         if let Ok(geo_out) = std::process::Command::new("curl")
-            .args(&["-s", "--max-time", "3", "http://ip-api.com/json/?fields=country,regionName,city,isp"])
+            .args(["-s", "--max-time", "3", "http://ip-api.com/json/?fields=country,regionName,city,isp"])
             .output()
         {
             let txt = String::from_utf8_lossy(&geo_out.stdout);
             if let Ok(geo) = serde_json::from_str::<serde_json::Value>(&txt) {
                 if let Some(isp_str) = geo.get("isp").and_then(|v| v.as_str()) {
-                    let clean = isp_str.to_lowercase().replace(' ', "").replace('.', "").replace(',', "");
+                    let clean = isp_str.to_lowercase().replace([' ', '.', ','], "");
                     if !clean.contains("notavailable") && !clean.is_empty() {
                         info.name = clean;
                     }
@@ -277,7 +277,7 @@ impl NetworkManager for MacosNetwork {
     fn get_safe_lan_ip(&self) -> String {
         // Get primary interface IP
         if let Ok(out) = std::process::Command::new("sh")
-            .args(&["-c", "ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo '127.0.0.1'"])
+            .args(["-c", "ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo '127.0.0.1'"])
             .output()
         {
             let ip = String::from_utf8_lossy(&out.stdout).trim().to_string();
@@ -302,7 +302,7 @@ pub struct MacosProcess;
 impl ProcessManager for MacosProcess {
     fn kill_by_name(&self, name: &str) -> Result<(), String> {
         let out = std::process::Command::new("pkill")
-            .args(&["-f", name])
+            .args(["-f", name])
             .status()
             .map_err(|e| format!("pkill failed: {}", e))?;
         if out.success() { Ok(()) } else { Err("Process not found".into()) }
@@ -310,7 +310,7 @@ impl ProcessManager for MacosProcess {
 
     fn kill_by_pid(&self, pid: u32) -> Result<(), String> {
         let out = std::process::Command::new("kill")
-            .args(&["-9", &pid.to_string()])
+            .args(["-9", &pid.to_string()])
             .status()
             .map_err(|e| format!("kill failed: {}", e))?;
         if out.success() { Ok(()) } else { Err("Process not found".into()) }
@@ -364,7 +364,7 @@ impl AutostartManager for MacosAutostart {
             .map_err(|e| format!("plist write: {}", e))?;
 
         let _ = std::process::Command::new("launchctl")
-            .args(&["load", &plist_path.to_string_lossy()])
+            .args(["load", &plist_path.to_string_lossy()])
             .status();
 
         Ok(())
@@ -377,7 +377,7 @@ impl AutostartManager for MacosAutostart {
         ).join("Library/LaunchAgents").join(format!("{}.plist", label));
 
         let _ = std::process::Command::new("launchctl")
-            .args(&["unload", &plist_path.to_string_lossy()])
+            .args(["unload", &plist_path.to_string_lossy()])
             .status();
         let _ = std::fs::remove_file(&plist_path);
 
@@ -453,6 +453,3 @@ impl DivertManager for MacosDivert {
         }
     }
 }
-
-
-

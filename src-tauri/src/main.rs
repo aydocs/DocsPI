@@ -33,5 +33,3 @@ fn main() {
 
     docspi_tauri_lib::run()
 }
-
-

@@ -99,7 +99,4 @@ export const NETWORK_MODE_DEFAULT = "smooth";
 
 // docs(api): add interactive API documentation
 
-// feat(security): add certificate pinning for HTTPS connections
-
-
-
+// feat(security): add certificate pinning for HTTPS connections

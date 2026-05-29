@@ -61,4 +61,3 @@ export function useUpdateChecker() {
   };
 }
 
-// Commit: feat: add useUpdateChecker hook [132227]

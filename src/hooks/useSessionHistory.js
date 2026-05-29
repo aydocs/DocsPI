@@ -62,4 +62,3 @@ export const useSessionHistory = () => {
   return { history, saveSession, resetHistory };
 };
 
-// Commit: feat: implement useSessionHistory hook [132227]
