@@ -18,7 +18,7 @@
   <a href="https://github.com/aydocs/DocsPI/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/aydocs/DocsPI?style=flat-square" alt="License">
   </a>
-  <a href="https://discord.gg/kasvet">
+  <a href="https://discord.gg/aydocs">
     <img src="https://img.shields.io/badge/Discord-7289DA?style=flat-square&logo=discord&logoColor=white" alt="Discord">
   </a>
 </p>

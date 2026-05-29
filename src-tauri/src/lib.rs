@@ -807,7 +807,7 @@ const PAC_PORT_START: u16 = 8787;
 
 const PAC_PORT_END: u16 = 8887;
 
-const SUPPORT_URL: &str = "https://discord.gg/kasvet";
+const SUPPORT_URL: &str = "https://discord.gg/aydocs";
 
 /// Bağlantı kesildiğinde kullanılan fallback PAC: tüm trafiği DIRECT yönlendirir
 /// Bu sayede cihazlar internet erişimini kaybetmez
