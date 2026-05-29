@@ -654,6 +654,13 @@ body {
   color: #fb923c;
 }
 
+.social-link-btn.profile-btn:hover {
+  border-color: rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.12);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.2);
+  color: #a78bfa;
+}
+
 /* ==========================================
    BOTTOM NAVIGATION
    ========================================== */

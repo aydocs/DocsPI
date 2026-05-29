@@ -240,6 +240,7 @@ const translations = {
     devTitle: 'Developer',
     devDiscord: 'Discord',
     devSubscribe: 'Discord',
+    devProfile: 'Developer',
     devSupport: 'Github',
   },
 };

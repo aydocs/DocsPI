@@ -1,6 +1,7 @@
 export const URLS = {
   github: "https://github.com/aydocs/DocsPI",
   discord: "https://discord.gg/kasvet",
+  discordProfile: "https://discord.com/users/886235491010248766",
   releases: "https://github.com/aydocs/DocsPI/releases",
 };
 
