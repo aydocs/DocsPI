@@ -1,4 +1,5 @@
 mod platform;
+mod mobile;
 
 use local_ip_address::list_afinet_netifas;
 
@@ -3088,6 +3089,25 @@ fn quit_app(app: tauri::AppHandle) {
 
 }
 
+// ---------------------------------------------------------------------------
+// Mobile VPN commands (Android VpnService / iOS NEPacketTunnelProvider)
+// ---------------------------------------------------------------------------
+
+#[tauri::command]
+fn start_vpn(config: mobile::VpnConfig) -> Result<(), String> {
+    mobile::start_vpn_impl(config)
+}
+
+#[tauri::command]
+fn stop_vpn() -> Result<(), String> {
+    mobile::stop_vpn_impl()
+}
+
+#[tauri::command]
+fn vpn_status() -> mobile::VpnStatus {
+    mobile::vpn_status_impl()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
 
@@ -3417,11 +3437,11 @@ pub fn run() {
             check_autostart_admin,
 
             start_divert_engine,
-
             stop_divert_engine,
-
-            check_divert_running
-
+            check_divert_running,
+            start_vpn,
+            stop_vpn,
+            vpn_status
         ])
 
         .build(tauri::generate_context!())

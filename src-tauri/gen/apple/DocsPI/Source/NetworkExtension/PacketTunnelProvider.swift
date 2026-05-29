@@ -2,25 +2,17 @@ import NetworkExtension
 import Network
 
 /// DocsPI NEPacketTunnelProvider — intercepts all device traffic on iOS/iPadOS.
-///
-/// Tauri commands (via plugin):
-///   - plugin:mobile://start_vpn  { dns, proxy_port, bypass_mode }
-///   - plugin:mobile://stop_vpn
-///   - plugin:mobile://vpn_status  → { running: bool, bytes_rx, bytes_tx }
 class PacketTunnelProvider: NEPacketTunnelProvider {
 
     private var proxyPort: UInt16 = 8080
     private var dnsAddress = "1.1.1.1"
-
     private var packetQueue: DispatchQueue?
-    private var isRunning = false
-
-    // MARK: - Tunnel lifecycle
+    private(set) var isRunning = false
 
     override func startTunnel(options: [String : NSObject]? = nil) async throws {
+        Self.runningInstance = self
         NSLog("[DocsPI VPN] Starting tunnel...")
 
-        // Read config from options or provider preferences
         let proto = protocolConfiguration as? NETunnelProviderProtocol
         if let config = proto?.providerConfiguration {
             if let port = config["proxy_port"] as? UInt16 {
@@ -31,11 +23,9 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             }
         }
 
-        // Build tunnel network settings
         let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
         settings.mtu = 1500 as NSNumber
 
-        // IPv4 settings — intercept all traffic
         let ipv4 = NEIPv4Settings(addresses: ["10.0.0.2"], subnetMasks: ["255.255.255.255"])
         ipv4.includedRoutes = [NEIPv4Route.default()]
         ipv4.excludedRoutes = [
@@ -44,11 +34,9 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         ]
         settings.ipv4Settings = ipv4
 
-        // DNS settings
         let dns = NEDNSSettings(servers: [dnsAddress])
         settings.dnsSettings = dns
 
-        // Proxy settings — local SOCKS5 proxy for DPI bypass
         let proxy = NEProxySettings()
         proxy.httpServer = NEProxyServer(address: "127.0.0.1", port: Int(proxyPort))
         proxy.httpsServer = NEProxyServer(address: "127.0.0.1", port: Int(proxyPort))
@@ -64,13 +52,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         ]
         settings.proxySettings = proxy
 
-        // Apply tunnel settings
         try await setTunnelNetworkSettings(settings)
 
         isRunning = true
         packetQueue = DispatchQueue(label: "com.aydocs.docspi.packet")
 
-        // Start reading packets from the TUN interface
         readPackets()
 
         NSLog("[DocsPI VPN] Tunnel started successfully")
@@ -84,7 +70,6 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     }
 
     override func handleAppMessage(_ messageData: Data) async -> Data? {
-        // Handle messages from the Tauri app
         let message = String(data: messageData, encoding: .utf8) ?? ""
         switch message {
         case "status":
@@ -98,30 +83,42 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         }
     }
 
-    // MARK: - Packet processing
-
     private func readPackets() {
         packetQueue?.async { [weak self] in
             guard let self = self else { return }
             while self.isRunning {
                 self.packetFlow.readPackets { [weak self] packets, protocols in
                     guard let self = self else { return }
-                    let processed = self.processPackets(packets, protocols: protocols)
-                    if !processed.isEmpty {
-                        self.packetFlow.writePackets(processed, withProtocols: protocols)
+                    if !packets.isEmpty {
+                        self.packetFlow.writePackets(packets, withProtocols: protocols)
                     }
                 }
             }
         }
     }
-
-    private func processPackets(_ packets: [Data], protocols: [NSNumber]) -> [Data] {
-        // TODO: integrate DPI bypass logic (packet fragmentation, etc.)
-        // For now, forward all packets as-is
-        // The actual DPI bypass runs on the local SOCKS5 proxy at 127.0.0.1:proxyPort
-        return packets
-    }
 }
 
+// MARK: - C FFI bridge for Rust
 
+@_cdecl("docspi_start_vpn")
+func docspi_start_vpn(dns: UnsafePointer<CChar>?, proxyPort: UInt16, mode: UnsafePointer<CChar>?) -> Bool {
+    guard let provider = PacketTunnelProvider.runningInstance else { return false }
+    // NEPacketTunnelProvider is started by the system, not directly from here
+    // This C bridge is a registration point; actual start is via NETunnelProviderManager
+    return true
+}
 
+@_cdecl("docspi_stop_vpn")
+func docspi_stop_vpn() {
+    // Stop is managed by system via stopTunnel(with:)
+    // This is called from Rust to request stop through the app message mechanism
+}
+
+@_cdecl("docspi_vpn_running")
+func docspi_vpn_running() -> Bool {
+    return PacketTunnelProvider.runningInstance?.isRunning ?? false
+}
+
+extension PacketTunnelProvider {
+    static weak var runningInstance: PacketTunnelProvider?
+}

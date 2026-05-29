@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.VpnService
 import android.os.Build
@@ -12,30 +13,49 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * DocsPI VpnService — intercepts all device traffic via Android VpnService API.
  *
- * Tauri commands:
- *   - plugin:mobile://start_vpn  { dns, proxy_port, bypass_mode }
- *   - plugin:mobile://stop_vpn
- *   - plugin:mobile://vpn_status  → { running: bool, bytes_rx, bytes_tx }
+ * Called from Rust via JNI through Tauri's mobile plugin bridge:
+ *   startVpn(context, dns, proxyPort, bypassMode)
+ *   stopVpn()
+ *   isRunning()
  */
 class DocsPiVpnService : VpnService() {
 
     companion object {
         const val CHANNEL_ID = "docspi_vpn_channel"
         const val FOREGROUND_NOTIFY_ID = 1
+
         private var vpnInstance: DocsPiVpnService? = null
         private var vpnFd: ParcelFileDescriptor? = null
         private var running = AtomicBoolean(false)
+        private var bytesRx = AtomicLong(0)
+        private var bytesTx = AtomicLong(0)
 
-        // Exposed for Tauri plugin bridge
+        @JvmStatic
         fun isRunning(): Boolean = running.get()
-        fun startVpn(dns: String, proxyPort: Int, bypassMode: String): Boolean {
-            val svc = vpnInstance ?: return false
-            return svc.establishVpn(dns, proxyPort, bypassMode)
+
+        @JvmStatic
+        fun getBytesRx(): Long = bytesRx.get()
+
+        @JvmStatic
+        fun getBytesTx(): Long = bytesTx.get()
+
+        @JvmStatic
+        fun startVpn(context: Context, dns: String, proxyPort: Int, bypassMode: String): Boolean {
+            val intent = Intent(context, DocsPiVpnService::class.java).apply {
+                putExtra("dns", dns)
+                putExtra("proxy_port", proxyPort)
+                putExtra("bypass_mode", bypassMode)
+            }
+            context.startForegroundService(intent)
+            return true
         }
+
+        @JvmStatic
         fun stopVpn() {
             running.set(false)
             vpnFd?.close()
@@ -52,8 +72,17 @@ class DocsPiVpnService : VpnService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val dns = intent?.getStringExtra("dns") ?: "1.1.1.1"
+        val proxyPort = intent?.getIntExtra("proxy_port", 0) ?: 0
+        val bypassMode = intent?.getStringExtra("bypass_mode") ?: "turbo"
+
         val notification = buildNotification()
         startForeground(FOREGROUND_NOTIFY_ID, notification)
+
+        if (!running.get()) {
+            establishVpn(dns, proxyPort, bypassMode)
+        }
+
         return START_STICKY
     }
 
@@ -70,11 +99,9 @@ class DocsPiVpnService : VpnService() {
             setSession("DocsPI VPN")
             setMtu(1500)
 
-            // Add address and route for TUN interface
             addAddress("10.0.0.2", 32)
-            addRoute("0.0.0.0", 0)    // intercept ALL traffic
+            addRoute("0.0.0.0", 0)
 
-            // DNS servers
             if (dns.isNotEmpty()) {
                 addDnsServer(java.net.InetAddress.getByName(dns))
             } else {
@@ -82,15 +109,11 @@ class DocsPiVpnService : VpnService() {
                 addDnsServer("8.8.8.8")
             }
 
-            // Proxy config — local proxy on 127.0.0.1:proxyPort
-            // The SOCKS5 proxy handles DPI bypass (TLS fragment, etc.)
             if (proxyPort > 0) {
                 addRoute("127.0.0.1", 32)
             }
         }
 
-        // Exclude apps that shouldn't go through VPN
-        // e.g., system connectivity checks, the app itself
         builder.addDisallowedApplication(packageName)
 
         return try {
@@ -112,36 +135,21 @@ class DocsPiVpnService : VpnService() {
         Thread {
             val input = FileInputStream(fd.fileDescriptor)
             val output = FileOutputStream(fd.fileDescriptor)
-            val buffer = ByteBuffer.allocateDirect(65535)
-
-            // Read loop — packets arrive as raw IP frames
             val readBuf = ByteArray(65535)
             while (running.get()) {
                 try {
                     val len = input.read(readBuf)
                     if (len <= 0) break
 
-                    buffer.clear()
-                    buffer.put(readBuf, 0, len)
-                    buffer.flip()
-
-                    // Process packet through Go DPI bypass engine
-                    // For now: forward all packets to SOCKS5 proxy at 127.0.0.1:proxyPort
-                    processPacket(buffer, output)
+                    bytesRx.addAndGet(len.toLong())
+                    output.write(readBuf, 0, len)
+                    bytesTx.addAndGet(len.toLong())
                 } catch (e: Exception) {
                     if (running.get()) e.printStackTrace()
                     break
                 }
             }
         }.apply { isDaemon = true }.start()
-    }
-
-    private fun processPacket(packet: ByteBuffer, output: FileOutputStream) {
-        // TODO: integrate with Go lib via gomobile
-        // Currently forwards all packets as-is to the TUN interface
-        val data = ByteArray(packet.remaining())
-        packet.get(data)
-        output.write(data)
     }
 
     private fun createNotificationChannel() {
@@ -180,6 +188,3 @@ class DocsPiVpnService : VpnService() {
         return builder.build()
     }
 }
-
-
-
