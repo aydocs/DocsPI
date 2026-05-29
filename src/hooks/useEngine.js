@@ -13,6 +13,7 @@ export function useEngine({
   setConfig,
   addLog, 
   t, 
+  isConnected,
   setIsConnected, 
   setIsProcessing, 
   updateConfig, 

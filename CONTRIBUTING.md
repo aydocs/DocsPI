@@ -73,7 +73,7 @@ npm run tauri build
 
 ## Sorularınız mı var?
 
-[Discord sunucumuzdan](https://discord.gg/aydocs) bize ulaşabilirsiniz.
+[Discord sunucumuzdan](https://discord.gg/kasvet) bize ulaşabilirsiniz.
 
 Teşekkürler! 🙏
 

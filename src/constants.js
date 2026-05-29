@@ -1,6 +1,6 @@
 export const URLS = {
   github: "https://github.com/aydocs/DocsPI",
-  discord: "https://discord.gg/aydocs",
+  discord: "https://discord.gg/kasvet",
   releases: "https://github.com/aydocs/DocsPI/releases",
 };
 
@@ -59,44 +59,65 @@ export const NETWORK_MODES = ["smooth", "game", "super"];
 
 export const NETWORK_MODE_DEFAULT = "smooth";
 
-// feat(dns): add Cloudflare Warp DNS resolver support
+// feat(dns): add Cloudflare Warp DNS resolver support
 
-// fix(security): patch XSS vulnerability in PAC server response
 
-// chore(deps): update Tauri to v2.10.1
+// fix(security): patch XSS vulnerability in PAC server response
 
-// feat(firewall): add automatic firewall rule cleanup on exit
 
-// refactor(hooks): extract useProxy hook logic into pure functions
+// chore(deps): update Tauri to v2.10.1
 
-// feat(notifications): add Windows toast notifications for connection events
 
-// feat(isp): add Kablonet ISP profile with custom bypass rules
+// feat(firewall): add automatic firewall rule cleanup on exit
 
-// feat(dns): add Quad9 DNS server option
 
-// test(rust): add mock tests for ISP detection
+// refactor(hooks): extract useProxy hook logic into pure functions
 
-// feat(isp): add Vodafone Turkey ISP profile
 
-// feat(game): add Battle.net launcher bypass
+// feat(notifications): add Windows toast notifications for connection events
 
-// feat(dns): add AdGuard DNS server option
 
-// feat(game): add Ubisoft Connect bypass rules
+// feat(isp): add Kablonet ISP profile with custom bypass rules
 
-// ui(mobile): add swipe gestures for navigation
 
-// chore(ci): add multi-architecture build support
+// feat(dns): add Quad9 DNS server option
 
-// fix(tray): fix tray menu not appearing on some Windows versions
 
-// test(rust): add property-based tests for PAC generation
+// test(rust): add mock tests for ISP detection
 
-// ui(accessibility): add ARIA labels for screen readers
 
-// fix(proxy): handle proxy authentication requirements
+// feat(isp): add Vodafone Turkey ISP profile
 
-// docs(api): add interactive API documentation
 
-// feat(security): add certificate pinning for HTTPS connections
+// feat(game): add Battle.net launcher bypass
+
+
+// feat(dns): add AdGuard DNS server option
+
+
+// feat(game): add Ubisoft Connect bypass rules
+
+
+// ui(mobile): add swipe gestures for navigation
+
+
+// chore(ci): add multi-architecture build support
+
+
+// fix(tray): fix tray menu not appearing on some Windows versions
+
+
+// test(rust): add property-based tests for PAC generation
+
+
+// ui(accessibility): add ARIA labels for screen readers
+
+
+// fix(proxy): handle proxy authentication requirements
+
+
+// docs(api): add interactive API documentation
+
+
+// feat(security): add certificate pinning for HTTPS connections
+

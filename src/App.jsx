@@ -302,6 +302,7 @@ function AppContent() {
     setConfig,
     addLog,
     t,
+    isConnected,
     setIsConnected,
     setIsProcessing,
     updateConfig,
