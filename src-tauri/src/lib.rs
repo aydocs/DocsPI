@@ -747,7 +747,7 @@ fn make_pac_body(lan_ip: &str, proxy_port: u16, bypass_domains: &[String]) -> St
 
         return "DIRECT";
 
-    //    Bu olmazsa Windows/Android/iOS "internet yok" simgesi gösterir
+    //    Bu olmazsa Windows/Android "internet yok" simgesi gösterir
 
     if (shExpMatch(host, "*.msftconnecttest.com") ||
 
@@ -3078,7 +3078,7 @@ fn quit_app(app: tauri::AppHandle) {
 }
 
 // ---------------------------------------------------------------------------
-// Mobile VPN commands (Android VpnService / iOS NEPacketTunnelProvider)
+// Mobile VPN commands (Android VpnService)
 // ---------------------------------------------------------------------------
 
 #[tauri::command]
@@ -3356,7 +3356,7 @@ pub fn run() {
 
         });
 
-        #[cfg(not(any(target_os = "android", target_os = "ios")))]
+        #[cfg(not(target_os = "android"))]
         let builder = builder.plugin(tauri_plugin_autostart::Builder::new().build());
 
         builder

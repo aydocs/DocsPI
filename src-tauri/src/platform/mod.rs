@@ -1,17 +1,13 @@
 //! Platform abstraction layer for DocsPI.
 //!
-//! Each platform (Windows, macOS, Linux, Android, iOS) implements these traits.
+//! Each platform (Windows, Linux, Android) implements these traits.
 //! The `get()` function returns the platform-specific implementation.
 #[cfg(target_os = "windows")]
 pub mod windows;
-#[cfg(target_os = "macos")]
-pub mod macos;
 #[cfg(target_os = "linux")]
 pub mod linux;
 #[cfg(target_os = "android")]
 pub mod android;
-#[cfg(target_os = "ios")]
-pub mod ios;
 use serde::Serialize;
 use std::sync::OnceLock;
 // ---------------------------------------------------------------------------
@@ -129,94 +125,58 @@ pub fn init() {
     let svc = PlatformService {
         #[cfg(target_os = "windows")]
         proxy: Box::new(windows::WindowsProxy),
-        #[cfg(target_os = "macos")]
-        proxy: Box::new(macos::MacosProxy),
         #[cfg(target_os = "linux")]
         proxy: Box::new(linux::LinuxProxy),
         #[cfg(target_os = "android")]
         proxy: Box::new(android::AndroidProxy),
-        #[cfg(target_os = "ios")]
-        proxy: Box::new(ios::IosProxy),
         #[cfg(target_os = "windows")]
         firewall: Box::new(windows::WindowsFirewall),
-        #[cfg(target_os = "macos")]
-        firewall: Box::new(macos::MacosFirewall),
         #[cfg(target_os = "linux")]
         firewall: Box::new(linux::LinuxFirewall),
         #[cfg(target_os = "android")]
         firewall: Box::new(android::AndroidFirewall),
-        #[cfg(target_os = "ios")]
-        firewall: Box::new(ios::IosFirewall),
         #[cfg(target_os = "windows")]
         dns: Box::new(windows::WindowsDns),
-        #[cfg(target_os = "macos")]
-        dns: Box::new(macos::MacosDns),
         #[cfg(target_os = "linux")]
         dns: Box::new(linux::LinuxDns),
         #[cfg(target_os = "android")]
         dns: Box::new(android::AndroidDns),
-        #[cfg(target_os = "ios")]
-        dns: Box::new(ios::IosDns),
         #[cfg(target_os = "windows")]
         network: Box::new(windows::WindowsNetwork),
-        #[cfg(target_os = "macos")]
-        network: Box::new(macos::MacosNetwork),
         #[cfg(target_os = "linux")]
         network: Box::new(linux::LinuxNetwork),
         #[cfg(target_os = "android")]
         network: Box::new(android::AndroidNetwork),
-        #[cfg(target_os = "ios")]
-        network: Box::new(ios::IosNetwork),
         #[cfg(target_os = "windows")]
         process: Box::new(windows::WindowsProcess),
-        #[cfg(target_os = "macos")]
-        process: Box::new(macos::MacosProcess),
         #[cfg(target_os = "linux")]
         process: Box::new(linux::LinuxProcess),
         #[cfg(target_os = "android")]
         process: Box::new(android::AndroidProcess),
-        #[cfg(target_os = "ios")]
-        process: Box::new(ios::IosProcess),
         #[cfg(target_os = "windows")]
         autostart: Box::new(windows::WindowsAutostart),
-        #[cfg(target_os = "macos")]
-        autostart: Box::new(macos::MacosAutostart),
         #[cfg(target_os = "linux")]
         autostart: Box::new(linux::LinuxAutostart),
         #[cfg(target_os = "android")]
         autostart: Box::new(android::AndroidAutostart),
-        #[cfg(target_os = "ios")]
-        autostart: Box::new(ios::IosAutostart),
         #[cfg(target_os = "windows")]
         instance: Box::new(windows::WindowsInstance),
-        #[cfg(target_os = "macos")]
-        instance: Box::new(macos::MacosInstance),
         #[cfg(target_os = "linux")]
         instance: Box::new(linux::LinuxInstance),
         #[cfg(target_os = "android")]
         instance: Box::new(android::AndroidInstance),
-        #[cfg(target_os = "ios")]
-        instance: Box::new(ios::IosInstance),
         #[cfg(target_os = "windows")]
         uwp: Box::new(windows::WindowsUwp),
-        #[cfg(target_os = "macos")]
-        uwp: Box::new(macos::MacosUwp),
         #[cfg(target_os = "linux")]
         uwp: Box::new(linux::LinuxUwp),
         #[cfg(target_os = "android")]
         uwp: Box::new(android::AndroidUwp),
-        #[cfg(target_os = "ios")]
-        uwp: Box::new(ios::IosUwp),
         #[cfg(target_os = "windows")]
         divert: Box::new(windows::WindowsDivert),
-        #[cfg(target_os = "macos")]
-        divert: Box::new(macos::MacosDivert),
         #[cfg(target_os = "linux")]
         divert: Box::new(linux::LinuxDivert),
         #[cfg(target_os = "android")]
         divert: Box::new(android::AndroidDivert),
-        #[cfg(target_os = "ios")]
-        divert: Box::new(ios::IosDivert),
     };
     if PLATFORM.set(svc).is_err() {
         panic!("PlatformService already initialised");
